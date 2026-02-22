@@ -63,3 +63,16 @@ class MultipleLinearRegressionScratch:
         ss_total = np.sum((y_true - np.mean(y_true)) ** 2)
         ss_residual = np.sum((y_true - y_pred) ** 2)
         return 1 - (ss_residual / ss_total)
+    
+    def feature_importance(self, feature_names=None):
+        coef = self.weights[1:]
+
+        abs_coef = np.abs(coef)
+        total = np.sum(abs_coef)
+
+        importance = abs_coef / (total + 1e-8)
+
+        if feature_names is not None:
+            return dict(zip(feature_names, importance))
+
+        return importance
