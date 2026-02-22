@@ -3,7 +3,7 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 
 from src.data.regression_data import load_regression_data
-from src.modeling.linear_regression.model import LinearRegressionScratch
+from src.modeling.poly_regression.model import PolynomialRegressionScratch
 
 def train():
 
@@ -19,7 +19,8 @@ def train():
     X_train = (X_train - mean) / std
     X_test = (X_test - mean) / std
 
-    lr = LinearRegressionScratch(
+    lr = PolynomialRegressionScratch(
+        degree=3,
         learning_rate=0.01,
         n_iterations=5000
     )
@@ -37,7 +38,7 @@ def train():
         "std": std
     }
 
-    model_path = Path("models/linear_regression_model.pkl")
+    model_path = Path("models/poly_regression_model.pkl")
     model_path.parent.mkdir(exist_ok=True)
 
     with open(model_path, "wb") as f:
