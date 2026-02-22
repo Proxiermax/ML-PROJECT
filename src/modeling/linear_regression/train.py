@@ -7,7 +7,7 @@ from src.modeling.linear_regression.model import LinearRegressionScratch
 
 def train():
 
-    X, y = load_regression_data()
+    X, y, feature_names = load_regression_data()
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
@@ -20,7 +20,7 @@ def train():
     X_test = (X_test - mean) / std
 
     lr = LinearRegressionScratch(
-        learning_rate=0.01,
+        learning_rate=0.001,
         n_iterations=5000
     )
 
@@ -44,6 +44,12 @@ def train():
         pickle.dump(model_package, f)
 
     print("Model saved!")
+
+    importance = lr.feature_importance(feature_names)
+
+    print("\nFeature Importance (%):")
+    for k, v in sorted(importance.items(), key=lambda x: x[1], reverse=True):
+        print(f"{k}: {v*100:.2f}%")
 
 if __name__ == "__main__":
     train()

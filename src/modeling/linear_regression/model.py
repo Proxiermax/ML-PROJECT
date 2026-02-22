@@ -13,7 +13,7 @@ class LinearRegressionScratch:
         self.coef_ = np.zeros(n)
         self.intercept_ = 0
 
-        for _ in range(self.n_iterations):
+        for i in range(self.n_iterations):
             y_pred = np.dot(X, self.coef_) + self.intercept_
             error = y_pred - y
 
@@ -26,6 +26,9 @@ class LinearRegressionScratch:
             loss = (1/(2*m)) * np.sum(error**2)
             self.loss_history.append(loss)
 
+            if i % 100 == 0:
+                print(f"Iteration {i}, Loss: {loss:.6f}")
+
     def predict(self, X):
         return np.dot(X, self.coef_) + self.intercept_
 
@@ -36,3 +39,14 @@ class LinearRegressionScratch:
         ss_total = np.sum((y_true - np.mean(y_true)) ** 2)
         ss_residual = np.sum((y_true - y_pred) ** 2)
         return 1 - (ss_residual / ss_total)
+    
+    def feature_importance(self, feature_names=None):
+        abs_coef = np.abs(self.coef_)
+        total = np.sum(abs_coef)
+
+        importance = abs_coef / total
+
+        if feature_names is not None:
+            return dict(zip(feature_names, importance))
+
+        return importance
