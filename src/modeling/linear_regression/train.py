@@ -4,7 +4,7 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 
 from src.data.regression_data import load_regression_data
-from src.modeling.model import LinearRegressionScratch
+from src.modeling.linear_regression.model import LinearRegressionScratch
 
 def train():
 

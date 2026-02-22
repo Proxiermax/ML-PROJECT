@@ -21,6 +21,6 @@ df_regression['predicted_price'] = pd.cut(
 
 def load_regression_data():
     X = df_regression[['gpu_tier', 'cpu_tier', 'ram_gb', 'cpu_cores', 'cpu_threads']].values
-    y = df_regression['price'].astype(float).values
+    y = df_regression['predicted_price'].astype(float).values
     
     return X, y
