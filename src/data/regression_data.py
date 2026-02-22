@@ -1,4 +1,4 @@
-from raw_data import df
+from .raw_data import df  
 import numpy as np
 import pandas as pd
 
@@ -19,4 +19,8 @@ df_regression['predicted_price'] = pd.cut(
     include_lowest=True
 )
 
-print(df_regression.head())
+def load_regression_data():
+    X = df_regression[['gpu_tier', 'cpu_tier', 'ram_gb', 'cpu_cores', 'cpu_threads']].values
+    y = df_regression['price'].astype(float).values
+    
+    return X, y
