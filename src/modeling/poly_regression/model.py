@@ -1,7 +1,6 @@
 import numpy as np
 
 class PolynomialRegressionScratch:
-
     def __init__(self, degree=2, learning_rate=0.01, n_iterations=1000):
         self.degree = degree
         self.learning_rate = learning_rate
@@ -46,9 +45,6 @@ class PolynomialRegressionScratch:
             loss = np.mean(errors ** 2)
             self.loss_history.append(loss)
 
-            if i % 100 == 0:
-                print(f"Iteration {i}, Loss: {loss:.6f}")
-
         return self  
 
     def predict(self, X):
@@ -63,17 +59,3 @@ class PolynomialRegressionScratch:
         ss_total = np.sum((y_true - np.mean(y_true)) ** 2)
         ss_residual = np.sum((y_true - y_pred) ** 2)
         return 1 - (ss_residual / ss_total)
-    
-    def feature_importance(self, feature_names):
-        n_original_features = len(feature_names)
-
-        coef = self.weights[1:]
-
-        coef_matrix = coef.reshape(self.degree, n_original_features)
-
-        abs_sum = np.sum(np.abs(coef_matrix), axis=0)
-        total = np.sum(abs_sum)
-
-        importance = abs_sum / (total + 1e-8)
-
-        return dict(zip(feature_names, importance))

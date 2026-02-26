@@ -15,9 +15,9 @@ from src.modeling.clustering.predict import predict as clustering_predict
 if __name__ == "__main__":
     raw_input = input("Enter features separated by comma: ")
     values = list(map(float, raw_input.split(",")))
-    print("Prediction:", linear_regression_predict(values))
-    print("Prediction:", poly_regression_predict(values))
-    print("Prediction:", multiple_regression_predict(values))
+    print("\nLinear Regression:", linear_regression_predict(values))
+    print("Polynomial Regression:", poly_regression_predict(values))
+    print("Multiple Regression:", multiple_regression_predict(values))
     
     print("Prediction:", logistic_regression_predict(values))
     print("Prediction:", perceptron_predict(values))
