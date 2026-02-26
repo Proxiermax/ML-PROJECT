@@ -16,7 +16,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 dependencies = [
+    "kagglehub>=1.0.0",
     "mkdocs",
+    "pandas>=2.3.3",
     "pip",
     "plt>=0.2.0",
     "python-dotenv",

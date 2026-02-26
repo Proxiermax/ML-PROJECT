@@ -1,6 +1,16 @@
 # Data
 /data/
 
+# Generated reports and figures
+reports/figures/*.png
+reports/figures/*.jpg
+reports/figures/*.jpeg
+reports/figures/*.pdf
+reports/figures/*.svg
+reports/*.html
+reports/*.pdf
+!reports/figures/.gitkeep
+
 # Mac OS-specific storage files
 .DS_Store
 
@@ -36,6 +46,12 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# Trained models
+models/*.pkl
+models/*.h5
+models/*.joblib
+models/*.model
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
