@@ -1,80 +1,48 @@
 import pickle
 from pathlib import Path
 from sklearn.model_selection import train_test_split
-
 from src.data.regression_data import load_regression_data
 from src.modeling.regression.scratch.linear_regression.model import LinearRegressionScratch
-from src.modeling.evaluation import evaluate_regression, compare_regression
-
 
 def train():
+    X, y, encoder = load_regression_data()
 
-    X, y, feature_names = load_regression_data()
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     mean = X_train.mean(axis=0)
-    std = X_train.std(axis=0)
+    std = X_train.std(axis=0) + 1e-8
 
     X_train = (X_train - mean) / std
     X_test = (X_test - mean) / std
 
-    # ===================== Scratch =====================
-    print("=" * 60)
-    print("Linear Regression (from scratch)")
-    print("=" * 60)
+    model = LinearRegressionScratch(learning_rate=0.001, n_iterations=5000)
+    model.fit(X_train, y_train)
 
-    lr = LinearRegressionScratch(
-        learning_rate=0.001,
-        n_iterations=5000
-    )
-    lr.fit(X_train, y_train)
-
-    print("\n--- Train Results (scratch) ---")
-    evaluate_regression(y_train, lr.predict(X_train))
-    print("\n--- Test Results (scratch) ---")
-    scratch_metrics = evaluate_regression(y_test, lr.predict(X_test))
-
-    model_package = {
-        "model": lr,
-        "mean": mean,
-        "std": std
+    metrics = {
+        "Train MSE": model.mse(y_train, model.predict(X_train)),
+        "Test MSE": model.mse(y_test, model.predict(X_test)),
+        "Train R2": model.r2_score(y_train, model.predict(X_train)),
+        "Test R2": model.r2_score(y_test, model.predict(X_test)),
+        "Loss History": model.loss_history
     }
 
-    model_path = Path("models/linear_regression_model.pkl")
-    model_path.parent.mkdir(exist_ok=True)
+    package = {
+        "model": model,
+        "mean": mean,
+        "std": std,
+        "encoder": encoder,
+    }
 
-    with open(model_path, "wb") as f:
-        pickle.dump(model_package, f)
-    print(f"\nModel saved to {model_path}")
+    PROJECT_ROOT = Path(__file__).resolve().parents[5]
+    MODEL_DIR = PROJECT_ROOT / "models"
+    path = MODEL_DIR / "linear_regression_scratch.pkl"
+    path = Path(path)
+    path.parent.mkdir(exist_ok=True)
 
-    importance = lr.feature_importance(feature_names)
-    print("\nFeature Importance (scratch):")
-    for k, v in sorted(importance.items(), key=lambda x: x[1], reverse=True):
-        print(f"  {k}: {v*100:.2f}%")
+    with open(path, "wb") as f:
+        pickle.dump(package, f)
 
-    # ===================== Lib (sklearn) =====================
-    from src.modeling.regression.lib.linear_regression.model import create_linear_regression
-
-    print("\n" + "=" * 60)
-    print("Linear Regression (lib / sklearn)")
-    print("=" * 60)
-
-    sk_model = create_linear_regression()
-    sk_model.fit(X_train, y_train)
-
-    print("\n--- Train Results (lib) ---")
-    evaluate_regression(y_train, sk_model.predict(X_train))
-    print("\n--- Test Results (lib) ---")
-    lib_metrics = evaluate_regression(y_test, sk_model.predict(X_test))
-
-    # ===================== Comparison =====================
-    compare_regression(scratch_metrics, lib_metrics, model_name="Linear Regression")
-
-    return lr, scratch_metrics
-
+    return metrics
 
 if __name__ == "__main__":
     train()

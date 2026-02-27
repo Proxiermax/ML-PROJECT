@@ -8,19 +8,19 @@ Machine Learning project with **11 models** implemented both **from scratch** an
 
 ## Models
 
-| # | Model | Type | Scratch | Lib (sklearn) |
-|---|-------|------|---------|---------------|
-| 1 | Linear Regression | Regression | ✅ | ✅ |
-| 2 | Polynomial Regression | Regression | ✅ | ✅ |
-| 3 | Multiple Regression | Regression | ✅ | ✅ |
-| 4 | Logistic Regression | Classification | ✅ | ✅ |
-| 5 | Decision Tree | Classification | ✅ | ✅ |
-| 6 | Random Forest | Classification | ✅ | ✅ |
-| 7 | SVM | Classification | ✅ | ✅ |
-| 8 | Perceptron / SLP | Classification | ✅ | ✅ |
-| 9 | MLP (Multi-Layer Perceptron) | Classification | ✅ | ✅ |
-| 10 | KNN (Custom Classification) | Classification | ✅ | ✅ |
-| 11 | Clustering (K-Means + Agglomerative) | Clustering | ✅ | ✅ |
+| #   | Model                                | Type           | Scratch | Lib (sklearn) |
+| --- | ------------------------------------ | -------------- | ------- | ------------- |
+| 1   | Linear Regression                    | Regression     | ✅      | ✅            |
+| 2   | Polynomial Regression                | Regression     | ✅      | ✅            |
+| 3   | Multiple Regression                  | Regression     | ✅      | ✅            |
+| 4   | Logistic Regression                  | Classification | ✅      | ✅            |
+| 5   | Decision Tree                        | Classification | ✅      | ✅            |
+| 6   | Random Forest                        | Classification | ✅      | ✅            |
+| 7   | SVM                                  | Classification | ✅      | ✅            |
+| 8   | Perceptron / SLP                     | Classification | ✅      | ✅            |
+| 9   | MLP (Multi-Layer Perceptron)         | Classification | ✅      | ✅            |
+| 10  | KNN (Custom Classification)          | Classification | ✅      | ✅            |
+| 11  | Clustering (K-Means + Agglomerative) | Clustering     | ✅      | ✅            |
 
 ## Project Organization
 
@@ -73,6 +73,7 @@ Machine Learning project with **11 models** implemented both **from scratch** an
 ```
 
 Each model folder contains:
+
 - `model.py` — Model class (scratch) or factory function (lib)
 - `train.py` — Train, evaluate, save, and compare scratch vs lib
 - `predict.py` — Load saved model and predict
@@ -174,7 +175,13 @@ You will be prompted to enter feature values separated by commas. The output sho
 
 Models are saved as `.pkl` files in the `models/` directory:
 
-| Version | Naming Pattern | Example |
-|---------|---------------|---------|
-| Scratch | `{model}_model.pkl` | `linear_regression_model.pkl` |
-| Lib | `lib_{model}_model.pkl` | `lib_linear_regression_model.pkl` |
+| Version | Naming Pattern          | Example                           |
+| ------- | ----------------------- | --------------------------------- |
+| Scratch | `{model}_model.pkl`     | `linear_regression_model.pkl`     |
+| Lib     | `lib_{model}_model.pkl` | `lib_linear_regression_model.pkl` |
+
+## Run Api
+
+```bash
+uv run uvicorn src.main:app --reload
+```

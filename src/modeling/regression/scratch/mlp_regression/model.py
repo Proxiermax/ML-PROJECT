@@ -2,18 +2,7 @@ import numpy as np
 
 
 class MLPRegressionScratch:
-    def __init__(
-        self,
-        input_dim,
-        hidden1=256,
-        hidden2=128,
-        hidden3=64,
-        lr=0.001,
-        beta1=0.9,
-        beta2=0.999,
-        eps=1e-8,
-        seed=42
-    ):
+    def __init__(self, input_dim, hidden1=256, hidden2=128, hidden3=64, lr=0.001, beta1=0.9, beta2=0.999, eps=1e-8, seed=42):
         np.random.seed(seed)
 
         self.lr = lr
@@ -178,12 +167,8 @@ class MLPRegressionScratch:
             if val_loss < best_loss:
                 best_loss = val_loss
                 patience = 0
-                best_weights = (
-                    self.W1.copy(), self.b1.copy(),
-                    self.W2.copy(), self.b2.copy(),
-                    self.W3.copy(), self.b3.copy(),
-                    self.W4.copy(), self.b4.copy()
-                )
+                best_weights = (self.W1.copy(), self.b1.copy(), self.W2.copy(), self.b2.copy(), 
+                                self.W3.copy(), self.b3.copy(), self.W4.copy(), self.b4.copy())
             else:
                 patience += 1
 
@@ -191,10 +176,7 @@ class MLPRegressionScratch:
                 break
 
         if best_weights is not None:
-            (self.W1, self.b1,
-             self.W2, self.b2,
-             self.W3, self.b3,
-             self.W4, self.b4) = best_weights
+            (self.W1, self.b1, self.W2, self.b2, self.W3, self.b3, self.W4, self.b4) = best_weights
 
     def predict(self, X):
         X = self.standardize_transform(X)
