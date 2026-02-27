@@ -1,20 +1,35 @@
 import pickle
 import numpy as np
 from pathlib import Path
+import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parents[5]
-MODEL_PATH = BASE_DIR / "models" / "lib_multiple_regression_model.pkl"
+MODEL_DIR = BASE_DIR / "models"
+PATH = MODEL_DIR / "multiple_regression_sklearn.pkl"
 
-with open(MODEL_PATH, "rb") as f:
-    saved = pickle.load(f)
+with open(PATH, "rb") as f:
+    model_saved = pickle.load(f)
 
-model = saved["model"]
-mean = saved["mean"]
-std = saved["std"]
+model = model_saved["model"]
+mean = model_saved["mean"]
+std = model_saved["std"]
+encoder = model_saved["encoder"]
 
+def predict(input_dict):
+    df_input = pd.DataFrame([input_dict])
 
-def predict(input_value):
-    X_new = np.array(input_value).reshape(1, -1)
-    X_new = (X_new - mean) / std
-    value = model.predict(X_new)[0]
-    return np.floor(value / 25) * 25
+    features = ['gpu_tier', 'ram_gb', 'resolution', 'cpu_tier', 'os', 'cpu_threads', 'cpu_cores']
+
+    df_input = df_input[features]
+
+    categorical_cols = ['gpu_tier', 'resolution', 'os']
+    df_input[categorical_cols] = encoder.transform(df_input[categorical_cols])
+
+    X_new = df_input.values
+
+    X_scaled = (X_new - mean) / std
+
+    value = model.predict(X_scaled)[0]
+    value = np.floor(value / 25) * 25
+
+    return {"sklearn_multiple_regression" : str(value) + " $" }

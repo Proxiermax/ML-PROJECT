@@ -9,7 +9,6 @@ class PolynomialRegressionScratch:
         self.loss_history = []
 
     def _create_polynomial_features(self, X):
-
         X = np.array(X)
 
         if X.ndim == 1:
@@ -33,7 +32,7 @@ class PolynomialRegressionScratch:
 
         self.weights = np.zeros(n)
 
-        for i in range(self.n_iterations):
+        for _ in range(self.n_iterations):
 
             predictions = X_poly @ self.weights
             errors = predictions - y
