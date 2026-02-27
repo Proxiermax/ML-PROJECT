@@ -1,8 +1,6 @@
 import numpy as np
 
-
 class MultipleLinearRegressionScratch:
-
     def __init__(self, learning_rate=0.01, n_iterations=1000):
         self.learning_rate = learning_rate
         self.n_iterations = n_iterations
@@ -28,7 +26,7 @@ class MultipleLinearRegressionScratch:
 
         self.weights = np.zeros(n)
 
-        for i in range(self.n_iterations):
+        for _ in range(self.n_iterations):
 
             predictions = X @ self.weights
             errors = predictions - y
@@ -39,9 +37,6 @@ class MultipleLinearRegressionScratch:
 
             loss = np.mean(errors ** 2)
             self.loss_history.append(loss)
-
-            if i % 100 == 0:
-                print(f"Iteration {i}, Loss: {loss:.6f}")
 
         return self
 
@@ -63,16 +58,3 @@ class MultipleLinearRegressionScratch:
         ss_total = np.sum((y_true - np.mean(y_true)) ** 2)
         ss_residual = np.sum((y_true - y_pred) ** 2)
         return 1 - (ss_residual / ss_total)
-    
-    def feature_importance(self, feature_names=None):
-        coef = self.weights[1:]
-
-        abs_coef = np.abs(coef)
-        total = np.sum(abs_coef)
-
-        importance = abs_coef / (total + 1e-8)
-
-        if feature_names is not None:
-            return dict(zip(feature_names, importance))
-
-        return importance
