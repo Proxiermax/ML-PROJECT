@@ -2,11 +2,10 @@ import pickle
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import Perceptron as SklearnPerceptron
 
 from src.data.classification_data import load_classification_data
-from src.modeling.classification.perceptron_classification.model import PerceptronScratch
-from src.modeling.evaluation import evaluate_classification
+from src.modeling.classification.perceptron.model import PerceptronScratch
+from src.modeling.evaluation import evaluate_classification, compare_classification
 
 
 def train():
@@ -20,7 +19,6 @@ def train():
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    # ===================== Scratch =====================
     print("=" * 60)
     print("Perceptron / SLP (from scratch)")
     print("=" * 60)
@@ -31,44 +29,36 @@ def train():
 
     y_pred = model.predict(X_test)
     print("\n--- Test Results (scratch) ---")
-    scratch_metrics = evaluate_classification(y_test, y_pred)
+    metrics = evaluate_classification(y_test, y_pred)
 
-    # ===================== Sklearn =====================
-    sk = SklearnPerceptron(max_iter=1000, random_state=42)
-    sk.fit(X_train, y_train)
-
-    y_pred_sk = sk.predict(X_test)
-    print("\n--- Test Results (sklearn) ---")
-    sklearn_metrics = evaluate_classification(y_test, y_pred_sk)
-
-    # ---- save models ----
-    PROJECT_ROOT = Path(__file__).resolve().parents[4]
-    MODEL_DIR = PROJECT_ROOT / "models"
-    MODEL_DIR.mkdir(exist_ok=True)
-
-    scratch_package = {"model": model, "scaler": scaler, "metrics": scratch_metrics}
-    with open(MODEL_DIR / "perceptron_scratch.pkl", "wb") as f:
-        pickle.dump(scratch_package, f)
-    print("Scratch model saved!")
-
-    sklearn_package = {"model": sk, "scaler": scaler, "metrics": sklearn_metrics}
-    with open(MODEL_DIR / "perceptron_sklearn.pkl", "wb") as f:
-        pickle.dump(sklearn_package, f)
-    print("Sklearn model saved!")
-
-    metrics = {
-        "Scratch Accuracy": scratch_metrics["accuracy"],
-        "Scratch Precision": scratch_metrics["precision"],
-        "Scratch Recall": scratch_metrics["recall"],
-        "Scratch F1": scratch_metrics["f1"],
-        "Sklearn Accuracy": sklearn_metrics["accuracy"],
-        "Sklearn Precision": sklearn_metrics["precision"],
-        "Sklearn Recall": sklearn_metrics["recall"],
-        "Sklearn F1": sklearn_metrics["f1"],
-        "Scratch Model Loss": model.loss_history,
+    # ---- save model ----
+    model_package = {
+        "model": model,
+        "scaler": scaler,
+        "metrics": metrics,
     }
+    model_path = Path("models/perceptron_model.pkl")
+    model_path.parent.mkdir(exist_ok=True)
+    with open(model_path, "wb") as f:
+        pickle.dump(model_package, f)
+    print(f"\nModel saved to {model_path}")
 
-    return metrics
+    # ===================== Lib (sklearn) =====================
+    from src.modeling.classification.lib.perceptron.model import create_perceptron
+
+    print("\n" + "=" * 60)
+    print("Perceptron / SLP (lib / sklearn)")
+    print("=" * 60)
+
+    sk = create_perceptron(max_iter=1000, random_state=42)
+    sk.fit(X_train, y_train)
+    print("\n--- Test Results (lib) ---")
+    lib_metrics = evaluate_classification(y_test, sk.predict(X_test))
+
+    # ===================== Comparison =====================
+    compare_classification(metrics, lib_metrics, model_name="Perceptron / SLP")
+
+    return model, metrics
 
 
 if __name__ == "__main__":

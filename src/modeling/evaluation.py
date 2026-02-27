@@ -67,10 +67,10 @@ def compare_classification(scratch_metrics, lib_metrics, model_name="Model"):
     print("  " + "-" * 53)
     for key in ["accuracy", "precision", "recall", "specificity", "f1"]:
         s = scratch_metrics.get(key, 0)
-        l = lib_metrics.get(key, 0)
-        diff = l - s
+        lib_val = lib_metrics.get(key, 0)
+        diff = lib_val - s
         sign = "+" if diff >= 0 else ""
-        print(f"  {key:<15} {s:>12.4f} {l:>14.4f} {sign}{diff:>9.4f}")
+        print(f"  {key:<15} {s:>12.4f} {lib_val:>14.4f} {sign}{diff:>9.4f}")
     print("=" * 60)
 
 
@@ -83,8 +83,8 @@ def compare_regression(scratch_metrics, lib_metrics, model_name="Model"):
     print("  " + "-" * 53)
     for key in ["mse", "rmse", "mae", "r2"]:
         s = scratch_metrics.get(key, 0)
-        l = lib_metrics.get(key, 0)
-        diff = l - s
+        lib_val = lib_metrics.get(key, 0)
+        diff = lib_val - s
         sign = "+" if diff >= 0 else ""
-        print(f"  {key:<15} {s:>12.4f} {l:>14.4f} {sign}{diff:>9.4f}")
+        print(f"  {key:<15} {s:>12.4f} {lib_val:>14.4f} {sign}{diff:>9.4f}")
     print("=" * 60)

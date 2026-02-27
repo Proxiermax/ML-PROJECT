@@ -1,11 +1,10 @@
 import pickle
 from pathlib import Path
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
 
 from src.data.classification_data import load_classification_data
-from src.modeling.classification.decision_tree_classification.model import DecisionTreeScratch
-from src.modeling.evaluation import evaluate_classification
+from src.modeling.classification.decision_tree.model import DecisionTreeScratch
+from src.modeling.evaluation import evaluate_classification, compare_classification
 
 
 def train():
@@ -16,8 +15,6 @@ def train():
     )
 
     # Decision trees do NOT need feature scaling
-
-    # ===================== Scratch =====================
     print("=" * 60)
     print("Decision Tree (from scratch)")
     print("=" * 60)
@@ -28,43 +25,32 @@ def train():
 
     y_pred = model.predict(X_test)
     print("\n--- Test Results (scratch) ---")
-    scratch_metrics = evaluate_classification(y_test, y_pred)
+    metrics = evaluate_classification(y_test, y_pred)
 
-    # ===================== Sklearn =====================
-    sk = DecisionTreeClassifier(max_depth=10, min_samples_split=5, random_state=42)
+    # ---- save model ----
+    model_package = {"model": model, "metrics": metrics}
+    model_path = Path("models/decision_tree_model.pkl")
+    model_path.parent.mkdir(exist_ok=True)
+    with open(model_path, "wb") as f:
+        pickle.dump(model_package, f)
+    print(f"\nModel saved to {model_path}")
+
+    # ===================== Lib (sklearn) =====================
+    from src.modeling.classification.lib.decision_tree.model import create_decision_tree
+
+    print("\n" + "=" * 60)
+    print("Decision Tree (lib / sklearn)")
+    print("=" * 60)
+
+    sk = create_decision_tree(max_depth=10, min_samples_split=5, criterion="gini")
     sk.fit(X_train, y_train)
+    print("\n--- Test Results (lib) ---")
+    lib_metrics = evaluate_classification(y_test, sk.predict(X_test))
 
-    y_pred_sk = sk.predict(X_test)
-    print("\n--- Test Results (sklearn) ---")
-    sklearn_metrics = evaluate_classification(y_test, y_pred_sk)
+    # ===================== Comparison =====================
+    compare_classification(metrics, lib_metrics, model_name="Decision Tree")
 
-    # ---- save models ----
-    PROJECT_ROOT = Path(__file__).resolve().parents[4]
-    MODEL_DIR = PROJECT_ROOT / "models"
-    MODEL_DIR.mkdir(exist_ok=True)
-
-    scratch_package = {"model": model, "metrics": scratch_metrics}
-    with open(MODEL_DIR / "decision_tree_scratch.pkl", "wb") as f:
-        pickle.dump(scratch_package, f)
-    print("Scratch model saved!")
-
-    sklearn_package = {"model": sk, "metrics": sklearn_metrics}
-    with open(MODEL_DIR / "decision_tree_sklearn.pkl", "wb") as f:
-        pickle.dump(sklearn_package, f)
-    print("Sklearn model saved!")
-
-    metrics = {
-        "Scratch Accuracy": scratch_metrics["accuracy"],
-        "Scratch Precision": scratch_metrics["precision"],
-        "Scratch Recall": scratch_metrics["recall"],
-        "Scratch F1": scratch_metrics["f1"],
-        "Sklearn Accuracy": sklearn_metrics["accuracy"],
-        "Sklearn Precision": sklearn_metrics["precision"],
-        "Sklearn Recall": sklearn_metrics["recall"],
-        "Sklearn F1": sklearn_metrics["f1"],
-    }
-
-    return metrics
+    return model, metrics
 
 
 if __name__ == "__main__":

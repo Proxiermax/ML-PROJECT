@@ -38,6 +38,11 @@ format:
 	ruff check --fix
 	ruff format
 
+## Run tests
+.PHONY: test
+test:
+	$(PYTHON_INTERPRETER) -m pytest src/test/ -v
+
 
 
 
