@@ -17,7 +17,7 @@ def train():
     )
 
     mean = X_train.mean(axis=0)
-    std = X_train.std(axis=0)
+    std = X_train.std(axis=0) + 1e-8
 
     X_train = (X_train - mean) / std
     X_test = (X_test - mean) / std
