@@ -4,7 +4,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.linear_model import Ridge
 
 from src.data.regression_data import load_regression_data
 from src.modeling.poly_regression.model import PolynomialRegressionScratch
@@ -18,7 +17,7 @@ def train():
     )
 
     mean = X_train.mean(axis=0)
-    std = X_train.std(axis=0)
+    std = X_train.std(axis=0) + 1e-8
 
     X_train = (X_train - mean) / std
     X_test = (X_test - mean) / std
@@ -36,7 +35,6 @@ def train():
     X_test_poly = poly.transform(X_test)
 
     sklearn_model = LinearRegression()
-    # sklearn_model = Ridge(alpha=1.0)
     sklearn_model.fit(X_train_poly, y_train)
 
     y_train_pred_lib = sklearn_model.predict(X_train_poly)
