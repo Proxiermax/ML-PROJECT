@@ -37,7 +37,9 @@ def train():
         "scaler": scaler,
         "metrics": metrics,
     }
-    model_path = Path("models/perceptron_model.pkl")
+    PROJECT_ROOT = Path(__file__).resolve().parents[5]
+    MODEL_DIR = PROJECT_ROOT / "models"
+    model_path = MODEL_DIR / "perceptron_model.pkl"
     model_path.parent.mkdir(exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)

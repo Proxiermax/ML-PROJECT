@@ -53,7 +53,9 @@ def train():
         "metrics": metrics,
         "best_k": best_k,
     }
-    model_path = Path("models/lib_custom_classification_model.pkl")
+    PROJECT_ROOT = Path(__file__).resolve().parents[5]
+    MODEL_DIR = PROJECT_ROOT / "models"
+    model_path = MODEL_DIR / "lib_custom_classification_model.pkl"
     model_path.parent.mkdir(exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)

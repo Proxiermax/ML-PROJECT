@@ -45,7 +45,9 @@ def train():
         "pca": pca,
         "metrics": metrics,
     }
-    model_path = Path("models/svm_model.pkl")
+    PROJECT_ROOT = Path(__file__).resolve().parents[5]
+    MODEL_DIR = PROJECT_ROOT / "models"
+    model_path = MODEL_DIR / "svm_model.pkl"
     model_path.parent.mkdir(exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)
