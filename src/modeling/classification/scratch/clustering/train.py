@@ -6,8 +6,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import adjusted_rand_score, silhouette_score
 
 from src.data.classification_data import load_classification_data
-from src.modeling.classification.lib.clustering.model import create_kmeans, create_agglomerative
-from src.modeling.evaluation import evaluate_classification
+from src.modeling.classification.scratch.clustering.model import KMeansScratch, AgglomerativeScratch
+from src.modeling.evaluation import evaluate_classification, compare_classification
 
 
 def _align_labels(true_labels, cluster_labels, n_clusters):
@@ -31,11 +31,12 @@ def train():
 
     # ===================== K-Means =====================
     print("=" * 60)
-    print("K-Means Clustering (sklearn)")
+    print("K-Means Clustering (from scratch)")
     print("=" * 60)
 
-    kmeans = create_kmeans(n_clusters=2, random_state=42)
-    km_labels = kmeans.fit_predict(X_scaled)
+    kmeans = KMeansScratch(n_clusters=2, max_iterations=300, random_state=42)
+    kmeans.fit(X_scaled)
+    km_labels = kmeans.labels_
 
     km_aligned = _align_labels(y, km_labels, n_clusters=2)
     print("\n--- K-Means Results (mapped to true labels) ---")
@@ -44,17 +45,18 @@ def train():
     print(f"  Silhouette:      {silhouette_score(X_scaled, km_labels):.4f}")
     print(f"  Adjusted Rand:   {adjusted_rand_score(y, km_labels):.4f}")
 
-    # ===================== Agglomerative =====================
+    # ===================== Agglomerative (on subset) =====================
     print("\n" + "=" * 60)
-    print("Agglomerative Clustering (sklearn)")
+    print("Agglomerative Clustering (from scratch) — on 2 000 sample subset")
     print("=" * 60)
 
+    # Agglomerative is O(n^3); use a subset for feasibility
     rng = np.random.RandomState(42)
     subset_size = min(2000, len(X_scaled))
     idx = rng.choice(len(X_scaled), size=subset_size, replace=False)
     X_sub, y_sub = X_scaled[idx], y[idx]
 
-    agglo = create_agglomerative(n_clusters=2, linkage="ward")
+    agglo = AgglomerativeScratch(n_clusters=2, linkage="single")
     agglo_labels = agglo.fit_predict(X_sub)
 
     agglo_aligned = _align_labels(y_sub, agglo_labels, n_clusters=2)
@@ -73,11 +75,38 @@ def train():
     }
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
     MODEL_DIR = PROJECT_ROOT / "models"
-    model_path = MODEL_DIR / "lib_clustering_model.pkl"
+    model_path = MODEL_DIR / "clustering_model.pkl"
     model_path.parent.mkdir(exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)
     print(f"\nModels saved to {model_path}")
+
+    # ===================== Lib (sklearn) =====================
+    from src.modeling.classification.lib.clustering.model import create_kmeans, create_agglomerative
+
+    print("\n" + "=" * 60)
+    print("K-Means Clustering (lib / sklearn)")
+    print("=" * 60)
+
+    sk_km = create_kmeans(n_clusters=2, random_state=42)
+    sk_km_labels = sk_km.fit_predict(X_scaled)
+    sk_km_aligned = _align_labels(y, sk_km_labels, 2)
+    print("\n--- K-Means Results (lib, mapped to true labels) ---")
+    sk_km_metrics = evaluate_classification(y, sk_km_aligned)
+
+    print("\n" + "=" * 60)
+    print("Agglomerative Clustering (lib / sklearn)")
+    print("=" * 60)
+
+    sk_ag = create_agglomerative(n_clusters=2, linkage="ward")
+    sk_ag_labels = sk_ag.fit_predict(X_sub)
+    sk_ag_aligned = _align_labels(y_sub, sk_ag_labels, 2)
+    print("\n--- Agglomerative Results (lib, mapped to true labels) ---")
+    sk_ag_metrics = evaluate_classification(y_sub, sk_ag_aligned)
+
+    # ===================== Comparison =====================
+    compare_classification(km_metrics, sk_km_metrics, model_name="K-Means Clustering")
+    compare_classification(agglo_metrics, sk_ag_metrics, model_name="Agglomerative Clustering")
 
     return (kmeans, agglo), (km_metrics, agglo_metrics)
 

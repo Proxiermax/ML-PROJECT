@@ -1,8 +1,8 @@
-from src.modeling.classification.clustering.predict import predict as clustering_predict
-from src.modeling.classification.custom_classification.predict import (
+from src.modeling.classification.scratch.clustering.predict import predict as clustering_predict
+from src.modeling.classification.scratch.custom_classification.predict import (
     predict as custom_classification_predict,
 )
-from src.modeling.classification.decision_tree.predict import predict as decision_tree_predict
+from src.modeling.classification.scratch.decision_tree.predict import predict as decision_tree_predict
 from src.modeling.classification.lib.clustering.predict import predict as lib_clustering_predict
 from src.modeling.classification.lib.custom_classification.predict import (
     predict as lib_custom_predict,
@@ -19,13 +19,13 @@ from src.modeling.classification.lib.random_forest.predict import (
     predict as lib_random_forest_predict,
 )
 from src.modeling.classification.lib.svm.predict import predict as lib_svm_predict
-from src.modeling.classification.logistic_regression.predict import (
+from src.modeling.classification.scratch.logistic_regression.predict import (
     predict as logistic_regression_predict,
 )
-from src.modeling.classification.mlp.predict import predict as mlp_classification_predict
-from src.modeling.classification.perceptron.predict import predict as perceptron_predict
-from src.modeling.classification.random_forest.predict import predict as random_forest_predict
-from src.modeling.classification.svm.predict import predict as svm_predict
+from src.modeling.classification.scratch.mlp.predict import predict as mlp_classification_predict
+from src.modeling.classification.scratch.perceptron.predict import predict as perceptron_predict
+from src.modeling.classification.scratch.random_forest.predict import predict as random_forest_predict
+from src.modeling.classification.scratch.svm.predict import predict as svm_predict
 from src.modeling.regression.lib.linear_regression.predict import predict as lib_linear_predict
 from src.modeling.regression.lib.multiple_regression.predict import predict as lib_multiple_predict
 from src.modeling.regression.lib.poly_regression.predict import predict as lib_poly_predict

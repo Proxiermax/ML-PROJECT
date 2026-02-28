@@ -134,42 +134,42 @@ class TestClassificationModels(unittest.TestCase):
     """Test classification model training and prediction imports."""
 
     def test_logistic_regression_train_import(self):
-        from src.modeling.classification.logistic_regression import train
+        from src.modeling.classification.scratch.logistic_regression import train
 
         self.assertTrue(hasattr(train, "train"))
 
     def test_perceptron_train_import(self):
-        from src.modeling.classification.perceptron import train
+        from src.modeling.classification.scratch.perceptron import train
 
         self.assertTrue(hasattr(train, "train"))
 
     def test_mlp_train_import(self):
-        from src.modeling.classification.mlp import train
+        from src.modeling.classification.scratch.mlp import train
 
         self.assertTrue(hasattr(train, "train"))
 
     def test_decision_tree_train_import(self):
-        from src.modeling.classification.decision_tree import train
+        from src.modeling.classification.scratch.decision_tree import train
 
         self.assertTrue(hasattr(train, "train"))
 
     def test_random_forest_train_import(self):
-        from src.modeling.classification.random_forest import train
+        from src.modeling.classification.scratch.random_forest import train
 
         self.assertTrue(hasattr(train, "train"))
 
     def test_svm_train_import(self):
-        from src.modeling.classification.svm import train
+        from src.modeling.classification.scratch.svm import train
 
         self.assertTrue(hasattr(train, "train"))
 
     def test_custom_classification_train_import(self):
-        from src.modeling.classification.custom_classification import train
+        from src.modeling.classification.scratch.custom_classification import train
 
         self.assertTrue(hasattr(train, "train"))
 
     def test_clustering_train_import(self):
-        from src.modeling.classification.clustering import train
+        from src.modeling.classification.scratch.clustering import train
 
         self.assertTrue(hasattr(train, "train"))
 
@@ -210,21 +210,21 @@ class TestClassificationModelStructure(unittest.TestCase):
     """Test classification scratch model classes."""
 
     def test_logistic_regression_model(self):
-        from src.modeling.classification.logistic_regression.model import LogisticRegressionScratch
+        from src.modeling.classification.scratch.logistic_regression.model import LogisticRegressionScratch
 
         model = LogisticRegressionScratch(learning_rate=0.01, n_iterations=10)
         self.assertTrue(hasattr(model, "fit"))
         self.assertTrue(hasattr(model, "predict"))
 
     def test_decision_tree_model(self):
-        from src.modeling.classification.decision_tree.model import DecisionTreeScratch
+        from src.modeling.classification.scratch.decision_tree.model import DecisionTreeScratch
 
         model = DecisionTreeScratch(max_depth=3)
         self.assertTrue(hasattr(model, "fit"))
         self.assertTrue(hasattr(model, "predict"))
 
     def test_perceptron_model(self):
-        from src.modeling.classification.perceptron.model import PerceptronScratch
+        from src.modeling.classification.scratch.perceptron.model import PerceptronScratch
 
         model = PerceptronScratch(learning_rate=0.01, n_iterations=10)
         self.assertTrue(hasattr(model, "fit"))

@@ -4,8 +4,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from src.data.classification_data import load_classification_data
-from src.modeling.classification.lib.mlp.model import create_mlp
-from src.modeling.evaluation import evaluate_classification
+from src.modeling.classification.scratch.mlp.model import MLPScratch
+from src.modeling.evaluation import evaluate_classification, compare_classification
 
 
 def train():
@@ -20,19 +20,20 @@ def train():
     X_test = scaler.transform(X_test)
 
     print("=" * 60)
-    print("Multi-Layer Perceptron (sklearn)")
+    print("Multi-Layer Perceptron (from scratch)")
     print("=" * 60)
     print(f"Train samples: {X_train.shape[0]}  |  Test samples: {X_test.shape[0]}")
 
-    model = create_mlp(
-        hidden_layer_sizes=(64, 32),
-        max_iter=500,
+    model = MLPScratch(
+        hidden_sizes=(64, 32),
+        learning_rate=0.01,
+        n_iterations=500,
         random_state=42,
     )
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
-    print("\n--- Test Results (sklearn) ---")
+    print("\n--- Test Results (scratch) ---")
     metrics = evaluate_classification(y_test, y_pred)
 
     # ---- save model ----
@@ -43,11 +44,30 @@ def train():
     }
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
     MODEL_DIR = PROJECT_ROOT / "models"
-    model_path = MODEL_DIR / "lib_mlp_model.pkl"
+    model_path = MODEL_DIR / "mlp_model.pkl"
     model_path.parent.mkdir(exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
+
+    # ===================== Lib (sklearn) =====================
+    from src.modeling.classification.lib.mlp.model import create_mlp
+
+    print("\n" + "=" * 60)
+    print("Multi-Layer Perceptron (lib / sklearn)")
+    print("=" * 60)
+
+    sk = create_mlp(
+        hidden_layer_sizes=(64, 32),
+        max_iter=500,
+        random_state=42,
+    )
+    sk.fit(X_train, y_train)
+    print("\n--- Test Results (lib) ---")
+    lib_metrics = evaluate_classification(y_test, sk.predict(X_test))
+
+    # ===================== Comparison =====================
+    compare_classification(metrics, lib_metrics, model_name="Multi-Layer Perceptron")
 
     return model, metrics
 
