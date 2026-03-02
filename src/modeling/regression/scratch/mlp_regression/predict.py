@@ -16,11 +16,11 @@ encoder = saved["encoder"]
 def predict(input_dict):
     df_input = pd.DataFrame([input_dict])
 
-    features = ['gpu_tier', 'ram_gb', 'resolution', 'cpu_tier', 'os', 'cpu_threads', 'cpu_cores']
+    features = ['gpu_tier', 'cpu_tier', 'ram_gb', 'cpu_cores', 'cpu_threads', 'device_type', 'resolution', 'os']
 
     df_input = df_input[features]
 
-    categorical_cols = ['gpu_tier', 'resolution', 'os']
+    categorical_cols = ['device_type', 'resolution', 'os']
     df_input[categorical_cols] = encoder.transform(df_input[categorical_cols])
 
     X_new = df_input.values
