@@ -12,15 +12,16 @@ first_edge = labels[0] - gap / 2.0
 last_edge = labels[-1] + gap / 2.0
 bins_edges = np.arange(first_edge, last_edge + gap, gap)
 
-df_regression['predicted_price'] = pd.cut(df_regression['price'], bins=bins_edges, labels=labels, right=True, include_lowest=True).astype(float)
+df_regression['predicted_price'] = pd.cut(df_regression['price'], bins=bins_edges, 
+labels=labels, right=True, include_lowest=True).astype(float)
 
 def load_regression_data():
 
     df_encoded = df_regression.copy()
 
-    features = ['gpu_tier', 'ram_gb', 'resolution', 'cpu_tier', 'os', 'cpu_threads', 'cpu_cores']
+    features = ['gpu_tier', 'cpu_tier', 'ram_gb', 'cpu_cores', 'cpu_threads', 'device_type', 'resolution', 'os']
 
-    categorical_cols = ['gpu_tier', 'resolution', 'os']
+    categorical_cols = ['device_type', 'resolution', 'os']
 
     encoder = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
 
