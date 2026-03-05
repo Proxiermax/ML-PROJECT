@@ -30,6 +30,8 @@ def train():
     y_pred = model.predict(X_test)
     print("\n--- Test Results (scratch) ---")
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.decision_function(X_test)
+    metrics["y_test"] = y_test
 
     # ---- save model ----
     model_package = {
@@ -38,9 +40,9 @@ def train():
         "metrics": metrics,
     }
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
-    MODEL_DIR = PROJECT_ROOT / "models"
-    model_path = MODEL_DIR / "perceptron_model.pkl"
-    model_path.parent.mkdir(exist_ok=True)
+    MODEL_DIR = PROJECT_ROOT / "models" / "classification" / "scratch" / "perceptron"
+    model_path = MODEL_DIR / "model.pkl"
+    model_path.parent.mkdir(parents=True, exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
@@ -61,7 +63,6 @@ def train():
     compare_classification(metrics, lib_metrics, model_name="Perceptron / SLP")
 
     return model, metrics
-
 
 if __name__ == "__main__":
     train()

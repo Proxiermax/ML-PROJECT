@@ -31,13 +31,13 @@ def train():
         "mean": mean,
         "std": std,
         "encoder": encoder,
+        "metrics": metrics,
     }
 
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
-    MODEL_DIR = PROJECT_ROOT / "models"
-    path = MODEL_DIR / "linear_regression_scratch.pkl"
-    path = Path(path)
-    path.parent.mkdir(exist_ok=True)
+    MODEL_DIR = PROJECT_ROOT / "models" / "regression" / "scratch" / "linear_regression"
+    path = MODEL_DIR / "model.pkl"
+    path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(path, "wb") as f:
         pickle.dump(package, f)

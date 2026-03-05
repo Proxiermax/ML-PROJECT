@@ -4,7 +4,7 @@
     <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
 </a>
 
-Machine Learning project with **11 models** implemented both **from scratch** and using **scikit-learn (lib)**, with side-by-side comparison.
+Machine Learning project with **13 models** implemented both **from scratch** and using **scikit-learn (lib)**, with side-by-side comparison.
 
 ## Models
 
@@ -22,6 +22,7 @@ Machine Learning project with **11 models** implemented both **from scratch** an
 | 10  | MLP (Multi-Layer Perceptron)         | Classification | ✅      | ✅            |
 | 11  | KNN (Custom Classification)          | Classification | ✅      | ✅            |
 | 12  | Clustering (K-Means + Agglomerative) | Clustering     | ✅      | ✅            |
+| 13  | XGBoost                              | Classification | ✅      | —             |
 
 ## Project Organization
 
@@ -69,7 +70,8 @@ Machine Learning project with **11 models** implemented both **from scratch** an
     │       │   ├── perceptron/
     │       │   ├── mlp/
     │       │   ├── custom_classification/
-    │       │   └── clustering/
+    │       │   ├── clustering/
+    │       │   └── xgboost/
     │       └── lib/                <- Classification models using sklearn
     │           ├── logistic_regression/
     │           ├── decision_tree/
@@ -121,6 +123,7 @@ uv run python -m src.modeling.classification.scratch.svm.train
 uv run python -m src.modeling.classification.scratch.perceptron.train
 uv run python -m src.modeling.classification.scratch.mlp.train
 uv run python -m src.modeling.classification.scratch.custom_classification.train
+uv run python -m src.modeling.classification.scratch.xgboost.train
 
 # Clustering
 uv run python -m src.modeling.classification.scratch.clustering.train

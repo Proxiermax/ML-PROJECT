@@ -49,3 +49,7 @@ class PerceptronScratch:
     def predict(self, X):
         z = np.dot(X, self.weights) + self.bias
         return self._step_function(z)
+
+    def decision_function(self, X):
+        """Raw linear output (continuous score for ROC)."""
+        return np.dot(X, self.weights) + self.bias

@@ -68,6 +68,14 @@ class RandomForestScratch:
         majority = stats.mode(all_preds, axis=0, keepdims=False)[0]
         return majority.astype(int)
 
+    def predict_proba(self, X):
+        """Return probability of class 1 (fraction of trees voting 1)."""
+        all_preds = np.array([
+            tree.predict(X[:, feat_idx])
+            for tree, feat_idx in zip(self.trees, self.feature_indices)
+        ])  # shape: (n_estimators, n_samples)
+        return np.mean(all_preds, axis=0)
+
     def feature_importance(self, feature_names=None):
         """Count how often each feature is selected across all trees."""
         n_features = max(max(idx) for idx in self.feature_indices) + 1

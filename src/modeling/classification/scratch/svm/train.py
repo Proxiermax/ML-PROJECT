@@ -37,6 +37,8 @@ def train():
     y_pred = model.predict(X_test_pca)
     print("\n--- Test Results (scratch + PCA) ---")
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.decision_function(X_test_pca)
+    metrics["y_test"] = y_test
 
     # ---- save model ----
     model_package = {
@@ -46,9 +48,9 @@ def train():
         "metrics": metrics,
     }
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
-    MODEL_DIR = PROJECT_ROOT / "models"
-    model_path = MODEL_DIR / "svm_model.pkl"
-    model_path.parent.mkdir(exist_ok=True)
+    MODEL_DIR = PROJECT_ROOT / "models" / "classification" / "scratch" / "svm"
+    model_path = MODEL_DIR / "model.pkl"
+    model_path.parent.mkdir(parents=True, exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
