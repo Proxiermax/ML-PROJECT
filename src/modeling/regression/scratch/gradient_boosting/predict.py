@@ -4,10 +4,9 @@ from pathlib import Path
 import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parents[5]
-MODEL_DIR = BASE_DIR / "models"
-PATH = MODEL_DIR / "gradient_boosting_regression.pkl"
+MODEL_PATH = BASE_DIR / "models" / "regression" / "scratch" / "gradient_boosting" / "model.pkl"
 
-with open(PATH, "rb") as f:
+with open(MODEL_PATH, "rb") as f:
     model_saved = pickle.load(f)
 
 model = model_saved["model"]
