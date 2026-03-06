@@ -2,7 +2,7 @@ import pickle
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 from src.data.regression_data import load_regression_data
-from src.modeling.regression.scratch.multiple_regression.model import MultipleRegressionScratch
+from src.modeling.regression.scratch.gradient_boosting.model import GradientBoostingRegressionScratch
 
 def train():
     X, y, encoder = load_regression_data()
@@ -15,7 +15,7 @@ def train():
     X_train = (X_train - mean) / std
     X_test = (X_test - mean) / std
 
-    model = MultipleRegressionScratch(learning_rate=0.01,n_iterations=3000)
+    model = GradientBoostingRegressionScratch(n_estimators=300, learning_rate=0.05, max_depth=4)
 
     model.fit(X_train, y_train, X_val=X_test, y_val=y_test)
 
@@ -24,21 +24,22 @@ def train():
         "Test MSE": model.mse(y_test, model.predict(X_test)),
         "Train R2": model.r2_score(y_train, model.predict(X_train)),
         "Test R2": model.r2_score(y_test, model.predict(X_test)),
-        "Loss History": model.loss_history, 
-        "Val History": model.val_history
+        "Loss History": model.loss_history,
+        "Val History": model.val_history, 
     }
 
     package = {
         "model": model,
         "mean": mean,
         "std": std,
-        "encoder": encoder
+        "encoder": encoder,
     }
 
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
     MODEL_DIR = PROJECT_ROOT / "models"
-    path = MODEL_DIR / "multiple_regression_scratch.pkl"
+    path = MODEL_DIR / "gradient_boosting_regression.pkl"
     path = Path(path)
+    path.parent.mkdir(exist_ok=True)
 
     with open(path, "wb") as f:
         pickle.dump(package, f)

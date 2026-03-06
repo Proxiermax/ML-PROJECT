@@ -7,8 +7,9 @@ class LinearRegressionScratch:
         self.coef_ = None
         self.intercept_ = None
         self.loss_history = []
+        self.val_history = [] 
 
-    def fit(self, X, y):
+    def fit(self, X, y, X_val=None, y_val=None): 
         m, n = X.shape
         self.coef_ = np.zeros(n)
         self.intercept_ = 0
@@ -23,8 +24,13 @@ class LinearRegressionScratch:
             self.coef_ -= self.learning_rate * coef_gradient
             self.intercept_ -= self.learning_rate * intercept_gradient
 
-            loss = (1/(2*m)) * np.sum(error**2)
-            self.loss_history.append(loss)
+            train_loss = (1/(2*m)) * np.sum(error**2)
+            self.loss_history.append(train_loss)
+
+            if X_val is not None:
+                val_pred = self.predict(X_val)
+                val_loss = self.mse(y_val, val_pred)
+                self.val_history.append(val_loss)
 
     def predict(self, X):
         return np.dot(X, self.coef_) + self.intercept_
