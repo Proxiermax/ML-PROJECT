@@ -37,6 +37,8 @@ def train():
     y_pred = model.predict(X_test_pca)
     print("\n--- Test Results (sklearn SVC + PCA) ---")
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.decision_function(X_test_pca)
+    metrics["y_test"] = y_test
 
     # ---- save model ----
     model_package = {

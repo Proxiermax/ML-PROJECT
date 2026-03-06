@@ -30,6 +30,8 @@ def train():
     y_pred = model.predict(X_test)
     print("\n--- Test Results (sklearn) ---")
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.decision_function(X_test)
+    metrics["y_test"] = y_test
 
     # ---- save model ----
     model_package = {

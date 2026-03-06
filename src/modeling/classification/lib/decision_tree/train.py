@@ -26,6 +26,8 @@ def train():
     y_pred = model.predict(X_test)
     print("\n--- Test Results (sklearn) ---")
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.predict_proba(X_test)[:, 1]
+    metrics["y_test"] = y_test
 
     # ---- feature importance ----
     print("\nFeature Importance (%):")

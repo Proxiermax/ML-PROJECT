@@ -28,8 +28,8 @@ def train():
     print(f"Train samples: {X_train_pca.shape[0]}  |  Test samples: {X_test_pca.shape[0]}")
 
     model = RandomForestScratch(
-        n_estimators=50,
-        max_depth=10,
+        n_estimators=10,
+        max_depth=5,
         min_samples_split=5,
         max_features="sqrt",
         random_state=42,

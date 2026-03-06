@@ -45,6 +45,8 @@ def train():
     y_pred = model.predict(X_test)
     print(f"\n--- Test Results (sklearn KNN, k={best_k}) ---")
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.predict_proba(X_test)[:, 1]
+    metrics["y_test"] = y_test
 
     # ---- save model ----
     model_package = {

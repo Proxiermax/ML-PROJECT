@@ -33,6 +33,8 @@ def train():
     y_pred = model.predict(X_test_pca)
     print("\n--- Test Results (sklearn + PCA) ---")
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.predict_proba(X_test_pca)[:, 1]
+    metrics["y_test"] = y_test
 
     # ---- save model ----
     model_package = {"model": model, "pca": pca, "metrics": metrics}
