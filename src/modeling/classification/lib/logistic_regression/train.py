@@ -53,7 +53,7 @@ def train():
     for k, v in sorted(zip(feature_names, importance), key=lambda x: x[1], reverse=True):
         print(f"  {k}: {v * 100:.2f}%")
 
-    return model, metrics
+    return metrics
 
 
 if __name__ == "__main__":

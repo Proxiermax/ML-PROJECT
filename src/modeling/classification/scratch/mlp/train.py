@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 
 from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.mlp.model import MLPScratch
-from src.modeling.evaluation import evaluate_classification, compare_classification
+from src.modeling.evaluation import evaluate_classification
 
 
 def train():
@@ -37,6 +37,8 @@ def train():
     metrics = evaluate_classification(y_test, y_pred)
     metrics["y_scores"] = model.predict_proba(X_test)
     metrics["y_test"] = y_test
+    metrics["Loss History"] = model.loss_history
+    metrics["Accuracy History"] = model.accuracy_history
 
     # ---- save model ----
     model_package = {
@@ -52,26 +54,7 @@ def train():
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
 
-    # ===================== Lib (sklearn) =====================
-    from src.modeling.classification.lib.mlp.model import create_mlp
-
-    print("\n" + "=" * 60)
-    print("Multi-Layer Perceptron (lib / sklearn)")
-    print("=" * 60)
-
-    sk = create_mlp(
-        hidden_layer_sizes=(64, 32),
-        max_iter=500,
-        random_state=42,
-    )
-    sk.fit(X_train, y_train)
-    print("\n--- Test Results (lib) ---")
-    lib_metrics = evaluate_classification(y_test, sk.predict(X_test))
-
-    # ===================== Comparison =====================
-    compare_classification(metrics, lib_metrics, model_name="Multi-Layer Perceptron")
-
-    return model, metrics
+    return metrics
 
 
 if __name__ == "__main__":

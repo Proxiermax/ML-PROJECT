@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 
 from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.custom_classification.model import KNNScratch
-from src.modeling.evaluation import evaluate_classification, compare_classification
+from src.modeling.evaluation import evaluate_classification
 
 
 def train():
@@ -63,22 +63,7 @@ def train():
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
 
-    # ===================== Lib (sklearn) =====================
-    from src.modeling.classification.lib.custom_classification.model import create_knn
-
-    print("\n" + "=" * 60)
-    print("KNN — Custom Classification (lib / sklearn)")
-    print("=" * 60)
-
-    sk = create_knn(n_neighbors=best_k)
-    sk.fit(X_train, y_train)
-    print(f"\n--- Test Results (lib, k={best_k}) ---")
-    lib_metrics = evaluate_classification(y_test, sk.predict(X_test))
-
-    # ===================== Comparison =====================
-    compare_classification(metrics, lib_metrics, model_name="Custom Classification (KNN)")
-
-    return model, metrics
+    return metrics
 
 
 if __name__ == "__main__":

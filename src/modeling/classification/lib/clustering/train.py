@@ -79,7 +79,7 @@ def train():
         pickle.dump(model_package, f)
     print(f"\nModels saved to {model_path}")
 
-    return (kmeans, agglo), (km_metrics, agglo_metrics)
+    return (km_metrics, agglo_metrics)
 
 
 if __name__ == "__main__":

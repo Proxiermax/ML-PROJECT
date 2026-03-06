@@ -44,7 +44,7 @@ def train():
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
 
-    return model, metrics
+    return metrics
 
 
 if __name__ == "__main__":

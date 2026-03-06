@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 
 from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.decision_tree.model import DecisionTreeScratch
-from src.modeling.evaluation import evaluate_classification, compare_classification
+from src.modeling.evaluation import evaluate_classification
 
 
 def train():
@@ -39,22 +39,7 @@ def train():
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
 
-    # ===================== Lib (sklearn) =====================
-    from src.modeling.classification.lib.decision_tree.model import create_decision_tree
-
-    print("\n" + "=" * 60)
-    print("Decision Tree (lib / sklearn)")
-    print("=" * 60)
-
-    sk = create_decision_tree(max_depth=10, min_samples_split=5, criterion="gini")
-    sk.fit(X_train, y_train)
-    print("\n--- Test Results (lib) ---")
-    lib_metrics = evaluate_classification(y_test, sk.predict(X_test))
-
-    # ===================== Comparison =====================
-    compare_classification(metrics, lib_metrics, model_name="Decision Tree")
-
-    return model, metrics
+    return metrics
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ from sklearn.decomposition import PCA
 
 from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.random_forest.model import RandomForestScratch
-from src.modeling.evaluation import evaluate_classification, compare_classification
+from src.modeling.evaluation import evaluate_classification
 
 
 def train():
@@ -52,22 +52,7 @@ def train():
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
 
-    # ===================== Lib (sklearn) =====================
-    from src.modeling.classification.lib.random_forest.model import create_random_forest
-
-    print("\n" + "=" * 60)
-    print("Random Forest (lib / sklearn) with PCA")
-    print("=" * 60)
-
-    sk = create_random_forest(n_estimators=50, max_depth=10, random_state=42)
-    sk.fit(X_train_pca, y_train)
-    print("\n--- Test Results (lib + PCA) ---")
-    lib_metrics = evaluate_classification(y_test, sk.predict(X_test_pca))
-
-    # ===================== Comparison =====================
-    compare_classification(metrics, lib_metrics, model_name="Random Forest (PCA)")
-
-    return model, metrics
+    return metrics
 
 
 if __name__ == "__main__":

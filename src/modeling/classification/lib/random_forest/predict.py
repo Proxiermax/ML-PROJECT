@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[5]
-MODEL_PATH = BASE_DIR / "models" / "lib_random_forest_model.pkl"
+MODEL_PATH = BASE_DIR / "models" / "classification" / "lib" / "random_forest" / "model.pkl"
 
 with open(MODEL_PATH, "rb") as f:
     saved = pickle.load(f)
