@@ -15,16 +15,17 @@ def train():
     X_train = (X_train - mean) / std
     X_test = (X_test - mean) / std
 
-    model = PolynomialRegressionScratch(degree=2, learning_rate=0.001, n_iterations=5000)
+    model = PolynomialRegressionScratch(degree=2, learning_rate=0.01, n_iterations=2000)
 
-    model.fit(X_train, y_train)
+    model.fit(X_train, y_train, X_val=X_test, y_val=y_test)
 
     metrics = {
         "Train MSE": model.mse(y_train, model.predict(X_train)),
         "Test MSE": model.mse(y_test, model.predict(X_test)),
         "Train R2": model.r2_score(y_train, model.predict(X_train)),
         "Test R2": model.r2_score(y_test, model.predict(X_test)),
-        "Loss History": model.loss_history
+        "Loss History": model.loss_history,
+        "Val History": model.val_history
     }
 
     package = {

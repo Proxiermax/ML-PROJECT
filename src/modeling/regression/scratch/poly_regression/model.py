@@ -7,6 +7,7 @@ class PolynomialRegressionScratch:
         self.n_iterations = n_iterations
         self.weights = None
         self.loss_history = []
+        self.val_history = []   
 
     def _create_polynomial_features(self, X):
         X = np.array(X)
@@ -15,7 +16,6 @@ class PolynomialRegressionScratch:
             X = X.reshape(-1, 1)
 
         m, n_features = X.shape
-
         features = [np.ones((m, 1))]
 
         for d in range(1, self.degree + 1):
@@ -23,14 +23,17 @@ class PolynomialRegressionScratch:
 
         return np.hstack(features)
 
-    def fit(self, X, y):
+    def fit(self, X, y, X_val=None, y_val=None):  
 
         X_poly = self._create_polynomial_features(X)
         y = np.array(y).reshape(-1)
 
         m, n = X_poly.shape
-
         self.weights = np.zeros(n)
+
+        if X_val is not None:
+            X_val_poly = self._create_polynomial_features(X_val)
+            y_val = np.array(y_val).reshape(-1)
 
         for _ in range(self.n_iterations):
 
@@ -38,11 +41,15 @@ class PolynomialRegressionScratch:
             errors = predictions - y
 
             gradients = (2 / m) * (X_poly.T @ errors)
-
             self.weights -= self.learning_rate * gradients
 
-            loss = np.mean(errors ** 2)
-            self.loss_history.append(loss)
+            train_loss = np.mean(errors ** 2)
+            self.loss_history.append(train_loss)
+
+            if X_val is not None:
+                val_pred = X_val_poly @ self.weights
+                val_loss = np.mean((y_val - val_pred) ** 2)
+                self.val_history.append(val_loss)
 
         return self  
 
