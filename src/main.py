@@ -6,7 +6,7 @@ from src.modeling.regression.scratch.poly_regression.predict import predict as s
 from src.modeling.regression.lib.poly_regression.predict import predict as sklearn_poly_regression_predict
 from src.modeling.regression.scratch.multiple_regression.predict import predict as scratch_multiple_regression_predict
 from src.modeling.regression.lib.multiple_regression.predict import predict as sklearn_multiple_regression_predict
-from src.modeling.regression.scratch.mlp_regression.predict import predict as mlp_regression_predict
+from src.modeling.regression.scratch.gradient_boosting.predict import predict as gradient_boosting_regression_predict
 
 app = FastAPI()
 
@@ -41,5 +41,5 @@ def predict_price(
         **sklearn_poly_regression_predict(input_data),
         **scratch_multiple_regression_predict(input_data),
         **sklearn_multiple_regression_predict(input_data),
-        **mlp_regression_predict(input_data),
+        **gradient_boosting_regression_predict(input_data),
     }
