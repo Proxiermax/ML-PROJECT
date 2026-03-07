@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[5]
-MODEL_PATH = BASE_DIR / "models" / "lib_logistic_regression_model.pkl"
+MODEL_PATH = BASE_DIR / "models" / "classification" / "lib" / "logistic_regression" / "model.pkl"
 
 with open(MODEL_PATH, "rb") as f:
     saved = pickle.load(f)

@@ -26,10 +26,10 @@ from src.modeling.classification.scratch.mlp.predict import predict as mlp_class
 from src.modeling.classification.scratch.perceptron.predict import predict as perceptron_predict
 from src.modeling.classification.scratch.random_forest.predict import predict as random_forest_predict
 from src.modeling.classification.scratch.svm.predict import predict as svm_predict
+from src.modeling.classification.scratch.xgboost.predict import predict as xgboost_predict
 from src.modeling.regression.lib.linear_regression.predict import predict as lib_linear_predict
 from src.modeling.regression.lib.multiple_regression.predict import predict as lib_multiple_predict
 from src.modeling.regression.lib.poly_regression.predict import predict as lib_poly_predict
-from src.modeling.regression.mlp_regression.predict import predict as mlp_regression_predict
 from src.modeling.regression.scratch.linear_regression.predict import (
     predict as scratch_linear_predict,
 )
@@ -116,4 +116,5 @@ if __name__ == "__main__":
         lib_clustering_predict(values),
     )
 
+    print(f"\n  XGBoost (Scratch): {xgboost_predict(values)}")
     print("\n" + "=" * 60)

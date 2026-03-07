@@ -6,7 +6,7 @@ from sklearn.decomposition import PCA
 
 from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.svm.model import SVMScratch
-from src.modeling.evaluation import evaluate_classification, compare_classification
+from src.modeling.evaluation import evaluate_classification
 
 
 def train():
@@ -37,6 +37,9 @@ def train():
     y_pred = model.predict(X_test_pca)
     print("\n--- Test Results (scratch + PCA) ---")
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.decision_function(X_test_pca)
+    metrics["y_test"] = y_test
+    metrics["Loss History"] = model.loss_history
 
     # ---- save model ----
     model_package = {
@@ -46,29 +49,14 @@ def train():
         "metrics": metrics,
     }
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
-    MODEL_DIR = PROJECT_ROOT / "models"
-    model_path = MODEL_DIR / "svm_model.pkl"
-    model_path.parent.mkdir(exist_ok=True)
+    MODEL_DIR = PROJECT_ROOT / "models" / "classification" / "scratch" / "svm"
+    model_path = MODEL_DIR / "model.pkl"
+    model_path.parent.mkdir(parents=True, exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
 
-    # ===================== Lib (sklearn) =====================
-    from src.modeling.classification.lib.svm.model import create_svm
-
-    print("\n" + "=" * 60)
-    print("SVM (lib / sklearn) with PCA")
-    print("=" * 60)
-
-    sk = create_svm(kernel="linear", random_state=42)
-    sk.fit(X_train_pca, y_train)
-    print("\n--- Test Results (lib SVC + PCA) ---")
-    lib_metrics = evaluate_classification(y_test, sk.predict(X_test_pca))
-
-    # ===================== Comparison =====================
-    compare_classification(metrics, lib_metrics, model_name="SVM (PCA)")
-
-    return model, metrics
+    return metrics
 
 
 if __name__ == "__main__":

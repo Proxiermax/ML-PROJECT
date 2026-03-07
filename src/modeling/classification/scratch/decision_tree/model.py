@@ -4,12 +4,13 @@ import numpy as np
 class _Node:
     """Internal node / leaf of decision tree."""
 
-    def __init__(self, feature=None, threshold=None, left=None, right=None, value=None):
+    def __init__(self, feature=None, threshold=None, left=None, right=None, value=None, class_dist=None):
         self.feature = feature
         self.threshold = threshold
         self.left = left
         self.right = right
         self.value = value          # class label for leaf
+        self.class_dist = class_dist  # fraction of positive class at leaf
 
     def is_leaf(self):
         return self.value is not None
@@ -79,11 +80,11 @@ class DecisionTreeScratch:
             or len(np.unique(y)) == 1
             or len(y) < self.min_samples_split
         ):
-            return _Node(value=self._most_common(y))
+            return _Node(value=self._most_common(y), class_dist=np.mean(y == 1))
 
         feat, thresh, gain = self._best_split(X, y)
         if gain <= 0 or feat is None:
-            return _Node(value=self._most_common(y))
+            return _Node(value=self._most_common(y), class_dist=np.mean(y == 1))
 
         left_mask = X[:, feat] <= thresh
         left = self._build(X[left_mask], y[left_mask], depth + 1)
@@ -103,3 +104,14 @@ class DecisionTreeScratch:
 
     def predict(self, X):
         return np.array([self._traverse(x, self.root) for x in X])
+
+    def _traverse_proba(self, x, node):
+        if node.is_leaf():
+            return node.class_dist
+        if x[node.feature] <= node.threshold:
+            return self._traverse_proba(x, node.left)
+        return self._traverse_proba(x, node.right)
+
+    def predict_proba(self, X):
+        """Return probability of class 1 for each sample."""
+        return np.array([self._traverse_proba(x, self.root) for x in X])

@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 
 from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.custom_classification.model import KNNScratch
-from src.modeling.evaluation import evaluate_classification, compare_classification
+from src.modeling.evaluation import evaluate_classification
 
 
 def train():
@@ -45,6 +45,8 @@ def train():
     y_pred = model.predict(X_test)
     print("\n--- Test Results (scratch, k={}) ---".format(best_k))
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.predict_proba(X_test)
+    metrics["y_test"] = y_test
 
     # ---- save model ----
     model_package = {
@@ -54,29 +56,14 @@ def train():
         "best_k": best_k,
     }
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
-    MODEL_DIR = PROJECT_ROOT / "models"
-    model_path = MODEL_DIR / "custom_classification_model.pkl"
-    model_path.parent.mkdir(exist_ok=True)
+    MODEL_DIR = PROJECT_ROOT / "models" / "classification" / "scratch" / "custom_classification"
+    model_path = MODEL_DIR / "model.pkl"
+    model_path.parent.mkdir(parents=True, exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
 
-    # ===================== Lib (sklearn) =====================
-    from src.modeling.classification.lib.custom_classification.model import create_knn
-
-    print("\n" + "=" * 60)
-    print("KNN — Custom Classification (lib / sklearn)")
-    print("=" * 60)
-
-    sk = create_knn(n_neighbors=best_k)
-    sk.fit(X_train, y_train)
-    print(f"\n--- Test Results (lib, k={best_k}) ---")
-    lib_metrics = evaluate_classification(y_test, sk.predict(X_test))
-
-    # ===================== Comparison =====================
-    compare_classification(metrics, lib_metrics, model_name="Custom Classification (KNN)")
-
-    return model, metrics
+    return metrics
 
 
 if __name__ == "__main__":

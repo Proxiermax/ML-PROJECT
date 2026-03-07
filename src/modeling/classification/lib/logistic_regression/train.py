@@ -31,6 +31,8 @@ def train():
     y_pred = model.predict(X_test)
     print("\n--- Test Results (sklearn) ---")
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.predict_proba(X_test)[:, 1]
+    metrics["y_test"] = y_test
 
     # ---- save model ----
     model_package = {
@@ -39,9 +41,9 @@ def train():
         "metrics": metrics,
     }
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
-    MODEL_DIR = PROJECT_ROOT / "models"
-    model_path = MODEL_DIR / "lib_logistic_regression_model.pkl"
-    model_path.parent.mkdir(exist_ok=True)
+    MODEL_DIR = PROJECT_ROOT / "models" / "classification" / "lib" / "logistic_regression"
+    model_path = MODEL_DIR / "model.pkl"
+    model_path.parent.mkdir(parents=True, exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
@@ -53,7 +55,7 @@ def train():
     for k, v in sorted(zip(feature_names, importance), key=lambda x: x[1], reverse=True):
         print(f"  {k}: {v * 100:.2f}%")
 
-    return model, metrics
+    return metrics
 
 
 if __name__ == "__main__":

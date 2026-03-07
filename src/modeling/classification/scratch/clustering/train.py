@@ -7,7 +7,7 @@ from sklearn.metrics import adjusted_rand_score, silhouette_score
 
 from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.clustering.model import KMeansScratch, AgglomerativeScratch
-from src.modeling.evaluation import evaluate_classification, compare_classification
+from src.modeling.evaluation import evaluate_classification
 
 
 def _align_labels(true_labels, cluster_labels, n_clusters):
@@ -74,41 +74,14 @@ def train():
         "agglo_metrics": agglo_metrics,
     }
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
-    MODEL_DIR = PROJECT_ROOT / "models"
-    model_path = MODEL_DIR / "clustering_model.pkl"
-    model_path.parent.mkdir(exist_ok=True)
+    MODEL_DIR = PROJECT_ROOT / "models" / "classification" / "scratch" / "clustering"
+    model_path = MODEL_DIR / "model.pkl"
+    model_path.parent.mkdir(parents=True, exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)
     print(f"\nModels saved to {model_path}")
 
-    # ===================== Lib (sklearn) =====================
-    from src.modeling.classification.lib.clustering.model import create_kmeans, create_agglomerative
-
-    print("\n" + "=" * 60)
-    print("K-Means Clustering (lib / sklearn)")
-    print("=" * 60)
-
-    sk_km = create_kmeans(n_clusters=2, random_state=42)
-    sk_km_labels = sk_km.fit_predict(X_scaled)
-    sk_km_aligned = _align_labels(y, sk_km_labels, 2)
-    print("\n--- K-Means Results (lib, mapped to true labels) ---")
-    sk_km_metrics = evaluate_classification(y, sk_km_aligned)
-
-    print("\n" + "=" * 60)
-    print("Agglomerative Clustering (lib / sklearn)")
-    print("=" * 60)
-
-    sk_ag = create_agglomerative(n_clusters=2, linkage="ward")
-    sk_ag_labels = sk_ag.fit_predict(X_sub)
-    sk_ag_aligned = _align_labels(y_sub, sk_ag_labels, 2)
-    print("\n--- Agglomerative Results (lib, mapped to true labels) ---")
-    sk_ag_metrics = evaluate_classification(y_sub, sk_ag_aligned)
-
-    # ===================== Comparison =====================
-    compare_classification(km_metrics, sk_km_metrics, model_name="K-Means Clustering")
-    compare_classification(agglo_metrics, sk_ag_metrics, model_name="Agglomerative Clustering")
-
-    return (kmeans, agglo), (km_metrics, agglo_metrics)
+    return (km_metrics, agglo_metrics)
 
 
 if __name__ == "__main__":

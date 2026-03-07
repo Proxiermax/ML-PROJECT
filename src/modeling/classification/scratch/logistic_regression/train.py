@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 
 from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.logistic_regression.model import LogisticRegressionScratch
-from src.modeling.evaluation import evaluate_classification, compare_classification
+from src.modeling.evaluation import evaluate_classification
 
 
 def train():
@@ -30,6 +30,9 @@ def train():
     y_pred = model.predict(X_test)
     print("\n--- Test Results (scratch) ---")
     metrics = evaluate_classification(y_test, y_pred)
+    metrics["y_scores"] = model.predict_proba(X_test)
+    metrics["y_test"] = y_test
+    metrics["Loss History"] = model.loss_history
 
     # ---- save model ----
     model_package = {
@@ -38,35 +41,14 @@ def train():
         "metrics": metrics,
     }
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
-    MODEL_DIR = PROJECT_ROOT / "models"
-    model_path = MODEL_DIR / "logistic_regression_model.pkl"
-    model_path.parent.mkdir(exist_ok=True)
+    MODEL_DIR = PROJECT_ROOT / "models" / "classification" / "scratch" / "logistic_regression"
+    model_path = MODEL_DIR / "model.pkl"
+    model_path.parent.mkdir(parents=True, exist_ok=True)
     with open(model_path, "wb") as f:
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
 
-    # ---- feature importance ----
-    importance = model.feature_importance(feature_names)
-    print("\nFeature Importance (scratch):")
-    for k, v in sorted(importance.items(), key=lambda x: x[1], reverse=True):
-        print(f"  {k}: {v * 100:.2f}%")
-
-    # ===================== Lib (sklearn) =====================
-    from src.modeling.classification.lib.logistic_regression.model import create_logistic_regression
-
-    print("\n" + "=" * 60)
-    print("Logistic Regression (lib / sklearn)")
-    print("=" * 60)
-
-    sk = create_logistic_regression(max_iter=1000, random_state=42)
-    sk.fit(X_train, y_train)
-    print("\n--- Test Results (lib) ---")
-    lib_metrics = evaluate_classification(y_test, sk.predict(X_test))
-
-    # ===================== Comparison =====================
-    compare_classification(metrics, lib_metrics, model_name="Logistic Regression")
-
-    return model, metrics
+    return metrics
 
 
 if __name__ == "__main__":
