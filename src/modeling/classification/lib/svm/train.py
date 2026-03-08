@@ -8,7 +8,6 @@ from src.data.classification_data import load_classification_data
 from src.modeling.classification.lib.svm.model import create_svm
 from src.modeling.evaluation import evaluate_classification
 
-
 def train():
     X, y, feature_names = load_classification_data()
 
@@ -20,7 +19,6 @@ def train():
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    # ---------- Dimensionality reduction (PCA) ----------
     pca = PCA(n_components=5, random_state=42)
     X_train_pca = pca.fit_transform(X_train)
     X_test_pca = pca.transform(X_test)
@@ -40,7 +38,6 @@ def train():
     metrics["y_scores"] = model.decision_function(X_test_pca)
     metrics["y_test"] = y_test
 
-    # ---- save model ----
     model_package = {
         "model": model,
         "scaler": scaler,
@@ -56,7 +53,6 @@ def train():
     print(f"\nModel saved to {model_path}")
 
     return metrics
-
 
 if __name__ == "__main__":
     train()

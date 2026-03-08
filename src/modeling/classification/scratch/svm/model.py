@@ -1,26 +1,21 @@
 import numpy as np
 
-
 class SVMScratch:
-    """Support Vector Machine (linear) built from scratch using hinge loss + SGD."""
-
     def __init__(self, learning_rate=0.001, lambda_param=0.01, n_iterations=1000):
         self.learning_rate = learning_rate
-        self.lambda_param = lambda_param      # regularisation strength
+        self.lambda_param = lambda_param      
         self.n_iterations = n_iterations
         self.weights = None
         self.bias = None
         self.loss_history = []
 
     def _hinge_loss(self, X, y_svm):
-        """Compute mean hinge loss  +  L2 regularisation."""
         margins = y_svm * (np.dot(X, self.weights) + self.bias)
         hinge = np.maximum(0, 1 - margins)
         reg = 0.5 * self.lambda_param * np.dot(self.weights, self.weights)
         return np.mean(hinge) + reg
 
     def fit(self, X, y):
-        """Train with mini-batch SGD. y must be 0/1 — converted to {-1, +1} internally."""
         m, n = X.shape
         y_svm = np.where(y == 0, -1, 1)
 

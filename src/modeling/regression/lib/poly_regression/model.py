@@ -4,7 +4,6 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-
 class PolynomialRegressionSklearn:
     def __init__(self, degree=2):
         self.degree = degree

@@ -7,7 +7,6 @@ from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.logistic_regression.model import LogisticRegressionScratch
 from src.modeling.evaluation import evaluate_classification
 
-
 def train():
     X, y, feature_names = load_classification_data()
 
@@ -34,7 +33,6 @@ def train():
     metrics["y_test"] = y_test
     metrics["Loss History"] = model.loss_history
 
-    # ---- save model ----
     model_package = {
         "model": model,
         "scaler": scaler,
@@ -49,7 +47,6 @@ def train():
     print(f"\nModel saved to {model_path}")
 
     return metrics
-
 
 if __name__ == "__main__":
     train()

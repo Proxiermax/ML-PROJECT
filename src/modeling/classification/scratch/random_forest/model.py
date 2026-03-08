@@ -1,10 +1,7 @@
 import numpy as np
 from src.modeling.classification.scratch.decision_tree.model import DecisionTreeScratch
 
-
 class RandomForestScratch:
-    """Random Forest classifier built from scratch (bagging + decision trees)."""
-
     def __init__(self, n_estimators=50, max_depth=10, min_samples_split=5,
                  max_features="sqrt", random_state=42):
         self.n_estimators = n_estimators
@@ -61,9 +58,8 @@ class RandomForestScratch:
         all_preds = np.array([
             tree.predict(X[:, feat_idx])
             for tree, feat_idx in zip(self.trees, self.feature_indices)
-        ])  # shape: (n_estimators, n_samples)
+        ])  
 
-        # majority vote
         from scipy import stats
         majority = stats.mode(all_preds, axis=0, keepdims=False)[0]
         return majority.astype(int)
@@ -73,7 +69,7 @@ class RandomForestScratch:
         all_preds = np.array([
             tree.predict(X[:, feat_idx])
             for tree, feat_idx in zip(self.trees, self.feature_indices)
-        ])  # shape: (n_estimators, n_samples)
+        ])  
         return np.mean(all_preds, axis=0)
 
     def feature_importance(self, feature_names=None):

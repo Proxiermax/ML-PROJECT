@@ -25,7 +25,6 @@ def train():
     print("=" * 60)
     print(f"Train samples: {X_train.shape[0]}  |  Test samples: {X_test.shape[0]}")
 
-    # ---------- find best k ----------
     best_k, best_acc = 1, 0
     for k in [3, 5, 7, 9, 11]:
         tmp = KNNScratch(k=k)
@@ -38,7 +37,6 @@ def train():
 
     print(f"\n  Best k = {best_k} (Acc = {best_acc:.4f})")
 
-    # ---------- train final model ----------
     model = KNNScratch(k=best_k, distance_metric="euclidean")
     model.fit(X_train, y_train)
 
@@ -48,7 +46,6 @@ def train():
     metrics["y_scores"] = model.predict_proba(X_test)
     metrics["y_test"] = y_test
 
-    # ---- save model ----
     model_package = {
         "model": model,
         "scaler": scaler,
@@ -64,7 +61,6 @@ def train():
     print(f"\nModel saved to {model_path}")
 
     return metrics
-
 
 if __name__ == "__main__":
     train()
