@@ -11,7 +11,6 @@ from src.modeling.evaluation import evaluate_classification
 
 
 def _align_labels(true_labels, cluster_labels, n_clusters):
-    """Map cluster IDs to true labels by majority vote so metrics are meaningful."""
     mapping = {}
     for k in range(n_clusters):
         mask = cluster_labels == k
@@ -29,7 +28,6 @@ def train():
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # ===================== K-Means =====================
     print("=" * 60)
     print("K-Means Clustering (from scratch)")
     print("=" * 60)
@@ -45,12 +43,10 @@ def train():
     print(f"  Silhouette:      {silhouette_score(X_scaled, km_labels):.4f}")
     print(f"  Adjusted Rand:   {adjusted_rand_score(y, km_labels):.4f}")
 
-    # ===================== Agglomerative (on subset) =====================
     print("\n" + "=" * 60)
     print("Agglomerative Clustering (from scratch) — on 2 000 sample subset")
     print("=" * 60)
 
-    # Agglomerative is O(n^3); use a subset for feasibility
     rng = np.random.RandomState(42)
     subset_size = min(2000, len(X_scaled))
     idx = rng.choice(len(X_scaled), size=subset_size, replace=False)
@@ -65,7 +61,6 @@ def train():
     print(f"  Silhouette:      {silhouette_score(X_sub, agglo_labels):.4f}")
     print(f"  Adjusted Rand:   {adjusted_rand_score(y_sub, agglo_labels):.4f}")
 
-    # ---- save models ----
     model_package = {
         "kmeans": kmeans,
         "agglo": agglo,
@@ -82,7 +77,6 @@ def train():
     print(f"\nModels saved to {model_path}")
 
     return (km_metrics, agglo_metrics)
-
 
 if __name__ == "__main__":
     train()

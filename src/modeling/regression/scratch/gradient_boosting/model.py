@@ -1,7 +1,6 @@
 import numpy as np
 from .tree import DecisionTreeRegressorScratch
 
-
 class GradientBoostingRegressionScratch:
     def __init__(self, n_estimators=200, learning_rate=0.05, max_depth=3):
         self.n_estimators = n_estimators

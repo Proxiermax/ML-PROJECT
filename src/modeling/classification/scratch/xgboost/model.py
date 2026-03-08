@@ -1,28 +1,17 @@
 import numpy as np
 
-
 class _XGBNode:
-    """Single node of a gradient-boosted decision tree."""
-
     def __init__(self, feature=None, threshold=None, left=None, right=None, value=None):
         self.feature = feature
         self.threshold = threshold
         self.left = left
         self.right = right
-        self.value = value  # leaf output (continuous score)
+        self.value = value 
 
     def is_leaf(self):
         return self.value is not None
 
-
 class _XGBTree:
-    """Regression tree used as a weak learner inside XGBoost.
-
-    Splits are chosen by the exact greedy gain formula:
-        Gain = 0.5 * [ G_L^2/H_L + G_R^2/H_R - (G_L+G_R)^2/(H_L+H_R) ] - gamma
-    where G and H are the sum of first- and second-order gradients.
-    """
-
     def __init__(self, max_depth=6, min_child_weight=1.0, gamma=0.0, reg_lambda=1.0):
         self.max_depth = max_depth
         self.min_child_weight = min_child_weight
@@ -30,19 +19,15 @@ class _XGBTree:
         self.reg_lambda = reg_lambda
         self.root = None
 
-    # ---------- leaf output ----------
     @staticmethod
     def _leaf_weight(grad, hess, reg_lambda):
-        """Optimal leaf weight: -G / (H + lambda)."""
         return -np.sum(grad) / (np.sum(hess) + reg_lambda)
 
-    # ---------- gain ----------
     def _gain(self, grad, hess):
         G = np.sum(grad)
         H = np.sum(hess)
         return (G ** 2) / (H + self.reg_lambda)
 
-    # ---------- best split ----------
     def _best_split(self, X, grad, hess):
         best_score = -np.inf
         best_feat, best_thresh = None, None
@@ -65,11 +50,9 @@ class _XGBTree:
                 G_right = G_total - G_left
                 H_right = H_total - H_left
 
-                # skip duplicate thresholds
                 if sorted_x[i] == sorted_x[i + 1]:
                     continue
 
-                # min child weight check
                 if H_left < self.min_child_weight or H_right < self.min_child_weight:
                     continue
 
@@ -84,9 +67,7 @@ class _XGBTree:
 
         return best_feat, best_thresh, best_score
 
-    # ---------- build ----------
     def _build(self, X, grad, hess, depth=0):
-        # stopping conditions
         if depth >= self.max_depth or len(grad) < 2:
             return _XGBNode(value=self._leaf_weight(grad, hess, self.reg_lambda))
 
@@ -105,7 +86,6 @@ class _XGBTree:
         self.root = self._build(X, grad, hess)
         return self
 
-    # ---------- predict ----------
     def _traverse(self, x, node):
         if node.is_leaf():
             return node.value
@@ -116,20 +96,7 @@ class _XGBTree:
     def predict(self, X):
         return np.array([self._traverse(x, self.root) for x in X])
 
-
-# ======================================================================
-# Main XGBoost Classifier (from scratch)
-# ======================================================================
-
 class XGBoostClassifierScratch:
-    """XGBoost binary classifier implemented from scratch.
-
-    Uses log-loss (binary cross-entropy) as the objective:
-        loss = -[ y * log(p) + (1 - y) * log(1 - p) ]
-        grad = p - y
-        hess = p * (1 - p)
-    """
-
     def __init__(
         self,
         n_estimators=100,
@@ -157,24 +124,20 @@ class XGBoostClassifierScratch:
         self.base_score = 0.0
         self.loss_history = []
 
-    # ---------- sigmoid ----------
     @staticmethod
     def _sigmoid(z):
         z = np.clip(z, -500, 500)
         return 1.0 / (1.0 + np.exp(-z))
 
-    # ---------- log-loss ----------
     @staticmethod
     def _logloss(y, p):
         p = np.clip(p, 1e-15, 1 - 1e-15)
         return -np.mean(y * np.log(p) + (1 - y) * np.log(1 - p))
 
-    # ---------- fit ----------
     def fit(self, X, y, X_val=None, y_val=None, verbose=True):
         rng = np.random.RandomState(self.random_state)
         n_samples, n_features = X.shape
 
-        # initialise raw scores with log-odds of the base rate
         pos_ratio = np.clip(np.mean(y), 1e-15, 1 - 1e-15)
         self.base_score = np.log(pos_ratio / (1 - pos_ratio))
         raw = np.full(n_samples, self.base_score, dtype=np.float64)
@@ -186,23 +149,19 @@ class XGBoostClassifierScratch:
         for t in range(self.n_estimators):
             p = self._sigmoid(raw)
 
-            # gradients (first and second order)
             grad = p - y
             hess = p * (1 - p)
 
-            # row subsampling
             if self.subsample < 1.0:
                 n_sub = max(1, int(n_samples * self.subsample))
                 idx = rng.choice(n_samples, size=n_sub, replace=False)
             else:
                 idx = np.arange(n_samples)
 
-            # column subsampling
             n_col_select = max(1, int(n_features * self.colsample_bytree))
             col_idx = np.sort(rng.choice(n_features, size=n_col_select, replace=False))
             self.col_indices.append(col_idx)
 
-            # build tree on subset
             tree = _XGBTree(
                 max_depth=self.max_depth,
                 min_child_weight=self.min_child_weight,
@@ -212,11 +171,9 @@ class XGBoostClassifierScratch:
             tree.fit(X[np.ix_(idx, col_idx)], grad[idx], hess[idx])
             self.trees.append(tree)
 
-            # update raw scores
             update = tree.predict(X[:, col_idx])
             raw += self.learning_rate * update
 
-            # track loss
             loss = self._logloss(y, self._sigmoid(raw))
             self.loss_history.append(loss)
 
@@ -229,7 +186,6 @@ class XGBoostClassifierScratch:
 
         return self
 
-    # ---------- predict ----------
     def predict_raw(self, X):
         raw = np.full(X.shape[0], self.base_score, dtype=np.float64)
         for tree, col_idx in zip(self.trees, self.col_indices):

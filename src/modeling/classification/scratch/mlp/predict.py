@@ -11,7 +11,6 @@ with open(MODEL_PATH, "rb") as f:
 model = saved["model"]
 scaler = saved["scaler"]
 
-
 def predict(input_value):
     X_new = np.array(input_value).reshape(1, -1)
     X_new = scaler.transform(X_new)

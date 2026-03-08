@@ -12,7 +12,6 @@ model = saved["model"]
 scaler = saved["scaler"]
 pca = saved["pca"]
 
-
 def predict(input_value):
     X_new = np.array(input_value).reshape(1, -1)
     X_new = scaler.transform(X_new)

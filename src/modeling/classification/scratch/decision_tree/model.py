@@ -1,31 +1,23 @@
 import numpy as np
 
-
 class _Node:
-    """Internal node / leaf of decision tree."""
-
     def __init__(self, feature=None, threshold=None, left=None, right=None, value=None, class_dist=None):
         self.feature = feature
         self.threshold = threshold
         self.left = left
         self.right = right
-        self.value = value          # class label for leaf
-        self.class_dist = class_dist  # fraction of positive class at leaf
+        self.value = value 
+        self.class_dist = class_dist 
 
     def is_leaf(self):
         return self.value is not None
-
-
 class DecisionTreeScratch:
-    """Decision‑Tree classifier built from scratch (CART, Gini / Entropy)."""
-
     def __init__(self, max_depth=10, min_samples_split=2, criterion="gini"):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.criterion = criterion
         self.root = None
 
-    # ---------- impurity measures ----------
     def _gini(self, y):
         classes, counts = np.unique(y, return_counts=True)
         probs = counts / len(y)
@@ -39,7 +31,6 @@ class DecisionTreeScratch:
     def _impurity(self, y):
         return self._gini(y) if self.criterion == "gini" else self._entropy(y)
 
-    # ---------- best split ----------
     def _best_split(self, X, y):
         best_gain = -1
         best_feat, best_thresh = None, None
@@ -69,7 +60,6 @@ class DecisionTreeScratch:
 
         return best_feat, best_thresh, best_gain
 
-    # ---------- build / predict ----------
     def _most_common(self, y):
         vals, cnts = np.unique(y, return_counts=True)
         return vals[np.argmax(cnts)]
@@ -113,5 +103,4 @@ class DecisionTreeScratch:
         return self._traverse_proba(x, node.right)
 
     def predict_proba(self, X):
-        """Return probability of class 1 for each sample."""
         return np.array([self._traverse_proba(x, self.root) for x in X])

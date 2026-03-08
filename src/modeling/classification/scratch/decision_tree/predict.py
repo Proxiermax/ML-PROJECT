@@ -10,7 +10,6 @@ with open(MODEL_PATH, "rb") as f:
 
 model = saved["model"]
 
-
 def predict(input_value):
     X_new = np.array(input_value).reshape(1, -1)
     label = model.predict(X_new)[0]

@@ -8,7 +8,6 @@ from src.data.classification_data import load_classification_data
 from src.modeling.classification.lib.logistic_regression.model import create_logistic_regression
 from src.modeling.evaluation import evaluate_classification
 
-
 def train():
     X, y, feature_names = load_classification_data()
 
@@ -34,7 +33,6 @@ def train():
     metrics["y_scores"] = model.predict_proba(X_test)[:, 1]
     metrics["y_test"] = y_test
 
-    # ---- save model ----
     model_package = {
         "model": model,
         "scaler": scaler,
@@ -48,7 +46,6 @@ def train():
         pickle.dump(model_package, f)
     print(f"\nModel saved to {model_path}")
 
-    # ---- feature importance ----
     abs_coef = np.abs(model.coef_[0])
     importance = abs_coef / np.sum(abs_coef)
     print("\nFeature Importance (%):")
@@ -56,7 +53,6 @@ def train():
         print(f"  {k}: {v * 100:.2f}%")
 
     return metrics
-
 
 if __name__ == "__main__":
     train()

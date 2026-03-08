@@ -2,8 +2,6 @@ import numpy as np
 
 
 class LogisticRegressionScratch:
-    """Logistic Regression built from scratch using gradient descent."""
-
     def __init__(self, learning_rate=0.01, n_iterations=1000):
         self.learning_rate = learning_rate
         self.n_iterations = n_iterations
@@ -16,7 +14,6 @@ class LogisticRegressionScratch:
         return 1.0 / (1.0 + np.exp(-z))
 
     def _compute_loss(self, y, y_pred):
-        """Binary cross-entropy loss."""
         eps = 1e-15
         y_pred = np.clip(y_pred, eps, 1 - eps)
         return -np.mean(y * np.log(y_pred) + (1 - y) * np.log(1 - y_pred))

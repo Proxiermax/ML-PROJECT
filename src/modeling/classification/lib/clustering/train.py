@@ -11,7 +11,6 @@ from src.modeling.evaluation import evaluate_classification
 
 
 def _align_labels(true_labels, cluster_labels, n_clusters):
-    """Map cluster IDs to true labels by majority vote so metrics are meaningful."""
     mapping = {}
     for k in range(n_clusters):
         mask = cluster_labels == k
@@ -29,7 +28,6 @@ def train():
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # ===================== K-Means =====================
     print("=" * 60)
     print("K-Means Clustering (sklearn)")
     print("=" * 60)
@@ -44,7 +42,6 @@ def train():
     print(f"  Silhouette:      {silhouette_score(X_scaled, km_labels):.4f}")
     print(f"  Adjusted Rand:   {adjusted_rand_score(y, km_labels):.4f}")
 
-    # ===================== Agglomerative =====================
     print("\n" + "=" * 60)
     print("Agglomerative Clustering (sklearn)")
     print("=" * 60)
@@ -63,7 +60,6 @@ def train():
     print(f"  Silhouette:      {silhouette_score(X_sub, agglo_labels):.4f}")
     print(f"  Adjusted Rand:   {adjusted_rand_score(y_sub, agglo_labels):.4f}")
 
-    # ---- save models ----
     model_package = {
         "kmeans": kmeans,
         "agglo": agglo,

@@ -6,7 +6,6 @@ from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.decision_tree.model import DecisionTreeScratch
 from src.modeling.evaluation import evaluate_classification
 
-
 def train():
     X, y, feature_names = load_classification_data()
 
@@ -14,7 +13,6 @@ def train():
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    # Decision trees do NOT need feature scaling
     print("=" * 60)
     print("Decision Tree (from scratch)")
     print("=" * 60)
@@ -29,7 +27,6 @@ def train():
     metrics["y_scores"] = model.predict_proba(X_test)
     metrics["y_test"] = y_test
 
-    # ---- save model ----
     model_package = {"model": model, "metrics": metrics}
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
     MODEL_DIR = PROJECT_ROOT / "models" / "classification" / "scratch" / "decision_tree"
@@ -40,7 +37,6 @@ def train():
     print(f"\nModel saved to {model_path}")
 
     return metrics
-
 
 if __name__ == "__main__":
     train()

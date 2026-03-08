@@ -1,20 +1,12 @@
 import numpy as np
 
-
 class KNNScratch:
-    """K-Nearest Neighbors classifier built from scratch.
-
-    This is the 'better classification model' required by the project —
-    a model outside classroom learning, implemented from scratch.
-    """
-
     def __init__(self, k=5, distance_metric="euclidean"):
         self.k = k
         self.distance_metric = distance_metric
         self.X_train = None
         self.y_train = None
 
-    # ---------- distance functions ----------
     @staticmethod
     def _euclidean(a, b):
         return np.sqrt(np.sum((a - b) ** 2, axis=1))
@@ -28,7 +20,6 @@ class KNNScratch:
             return self._manhattan(self.X_train, x)
         return self._euclidean(self.X_train, x)
 
-    # ---------- fit / predict ----------
     def fit(self, X, y):
         self.X_train = np.array(X)
         self.y_train = np.array(y)
@@ -39,7 +30,6 @@ class KNNScratch:
         k_indices = np.argsort(distances)[:self.k]
         k_labels = self.y_train[k_indices]
 
-        # weighted vote (inverse distance)
         k_dists = distances[k_indices]
         k_dists = np.where(k_dists == 0, 1e-10, k_dists)
         weights = 1.0 / k_dists
@@ -53,7 +43,6 @@ class KNNScratch:
         return np.array([self._predict_single(x) for x in X])
 
     def predict_proba(self, X):
-        """Return probability of class 1 (proportion of k-neighbors that are class 1)."""
         X = np.array(X)
         probs = []
         for x in X:

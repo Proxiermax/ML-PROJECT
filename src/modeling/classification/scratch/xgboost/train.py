@@ -7,7 +7,6 @@ from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.xgboost.model import XGBoostClassifierScratch
 from src.modeling.evaluation import evaluate_classification
 
-
 def train():
     X, y, feature_names = load_classification_data()
 
@@ -15,7 +14,6 @@ def train():
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    # ---------- Feature scaling ----------
     scaler = StandardScaler()
     X_train_sc = scaler.fit_transform(X_train)
     X_test_sc = scaler.transform(X_test)
@@ -44,10 +42,8 @@ def train():
     metrics["y_scores"] = model.predict_proba(X_test_sc)
     metrics["y_test"] = y_test
 
-    # attach loss history to metrics for plotting
     metrics["Loss History"] = model.loss_history
 
-    # ---- save model ----
     model_package = {"model": model, "scaler": scaler, "metrics": metrics}
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
     MODEL_DIR = PROJECT_ROOT / "models" / "classification" / "scratch" / "xgboost"
@@ -58,7 +54,6 @@ def train():
     print(f"\nModel saved to {model_path}")
 
     return metrics
-
 
 if __name__ == "__main__":
     train()

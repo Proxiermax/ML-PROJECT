@@ -2,8 +2,6 @@ import numpy as np
 
 
 class PerceptronScratch:
-    """Single-Layer Perceptron (SLP) built from scratch."""
-
     def __init__(self, learning_rate=0.01, n_iterations=1000):
         self.learning_rate = learning_rate
         self.n_iterations = n_iterations
@@ -13,7 +11,6 @@ class PerceptronScratch:
         self.accuracy_history = []
 
     def _step_function(self, z):
-        """Hard threshold activation."""
         return np.where(z >= 0, 1, 0)
 
     def fit(self, X, y):
@@ -51,5 +48,4 @@ class PerceptronScratch:
         return self._step_function(z)
 
     def decision_function(self, X):
-        """Raw linear output (continuous score for ROC)."""
         return np.dot(X, self.weights) + self.bias

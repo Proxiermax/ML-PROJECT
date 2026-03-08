@@ -15,7 +15,6 @@ def train():
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    # ---------- Dimensionality reduction (PCA) ----------
     pca = PCA(n_components=5, random_state=42)
     X_train_pca = pca.fit_transform(X_train)
     X_test_pca = pca.transform(X_test)
@@ -42,7 +41,6 @@ def train():
     metrics["y_scores"] = model.predict_proba(X_test_pca)
     metrics["y_test"] = y_test
 
-    # ---- save model ----
     model_package = {"model": model, "pca": pca, "metrics": metrics}
     PROJECT_ROOT = Path(__file__).resolve().parents[5]
     MODEL_DIR = PROJECT_ROOT / "models" / "classification" / "scratch" / "random_forest"
@@ -53,7 +51,6 @@ def train():
     print(f"\nModel saved to {model_path}")
 
     return metrics
-
 
 if __name__ == "__main__":
     train()

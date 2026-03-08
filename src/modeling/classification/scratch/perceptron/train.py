@@ -7,7 +7,6 @@ from src.data.classification_data import load_classification_data
 from src.modeling.classification.scratch.perceptron.model import PerceptronScratch
 from src.modeling.evaluation import evaluate_classification
 
-
 def train():
     X, y, feature_names = load_classification_data()
 
@@ -35,7 +34,6 @@ def train():
     metrics["Loss History"] = model.loss_history
     metrics["Accuracy History"] = model.accuracy_history
 
-    # ---- save model ----
     model_package = {
         "model": model,
         "scaler": scaler,
