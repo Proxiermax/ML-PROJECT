@@ -1,4 +1,4 @@
-import numpy as np
+from src.utils.gpu import xp as np, to_numpy
 
 class MLPScratch:
     def __init__(self, hidden_sizes=(64, 32), learning_rate=0.01,
@@ -47,11 +47,11 @@ class MLPScratch:
             self.biases.append(b)
 
     def _forward(self, X):
-        activations = [X]
+        activations = [np.asarray(X)]
         z_list = []
 
         for i in range(len(self.weights)):
-            z = activations[-1] @ self.weights[i] + self.biases[i]
+            z = activations[-1] @ np.asarray(self.weights[i]) + np.asarray(self.biases[i])
             z_list.append(z)
 
             if i < len(self.weights) - 1:
@@ -77,11 +77,12 @@ class MLPScratch:
             db_list[i] = np.mean(delta, axis=0, keepdims=True)
 
             if i > 0:
-                delta = (delta @ self.weights[i].T) * self._relu_deriv(z_list[i - 1])
+                delta = (delta @ np.asarray(self.weights[i]).T) * self._relu_deriv(z_list[i - 1])
 
         return dw_list, db_list
 
     def fit(self, X, y):
+        X, y = np.asarray(X), np.asarray(y)
         self._init_params(X.shape[1])
         self.loss_history = []
         self.accuracy_history = []
@@ -90,10 +91,10 @@ class MLPScratch:
             activations, z_list = self._forward(X)
             y_pred = activations[-1].flatten()
 
-            loss = self._bce_loss(y, y_pred)
+            loss = float(self._bce_loss(y, y_pred))
             self.loss_history.append(loss)
 
-            acc = np.mean((y_pred >= 0.5).astype(int) == y)
+            acc = float(np.mean((y_pred >= 0.5).astype(int) == y))
             self.accuracy_history.append(acc)
 
             dw_list, db_list = self._backward(activations, z_list, y)
@@ -105,11 +106,13 @@ class MLPScratch:
             if epoch % 100 == 0:
                 print(f"  Epoch {epoch}, Loss: {loss:.6f}, Acc: {acc:.4f}")
 
+        self.weights = [to_numpy(w) for w in self.weights]
+        self.biases = [to_numpy(b) for b in self.biases]
         return self
 
     def predict_proba(self, X):
         activations, _ = self._forward(X)
-        return activations[-1].flatten()
+        return to_numpy(activations[-1].flatten())
 
     def predict(self, X, threshold=0.5):
         return (self.predict_proba(X) >= threshold).astype(int)
