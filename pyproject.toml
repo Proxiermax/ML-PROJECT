@@ -16,10 +16,16 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 dependencies = [
+    "fastapi>=0.133.1",
+    "kagglehub>=1.0.0",
     "mkdocs",
+    "pandas>=2.3.3",
     "pip",
+    "plt>=0.2.0",
     "python-dotenv",
     "ruff",
+    "scikit-learn>=1.7.2",
+    "uvicorn>=0.41.0",
 ]
 requires-python = "~=3.10.0"
 
