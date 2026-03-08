@@ -11,15 +11,18 @@ from src.modeling.evaluation import evaluate_classification
 
 
 def _align_labels(true_labels, cluster_labels, n_clusters):
-    mapping = {}
-    for k in range(n_clusters):
-        mask = cluster_labels == k
-        if np.any(mask):
-            vals, counts = np.unique(true_labels[mask], return_counts=True)
-            mapping[k] = vals[np.argmax(counts)]
-        else:
-            mapping[k] = 0
-    return np.array([mapping[c] for c in cluster_labels])
+    """Try all label permutations and pick the one with highest accuracy."""
+    from itertools import permutations
+    best_acc, best_aligned = -1, cluster_labels.copy()
+    classes = list(range(n_clusters))
+    for perm in permutations(classes):
+        mapping = {k: perm[k] for k in classes}
+        aligned = np.array([mapping[c] for c in cluster_labels])
+        acc = np.mean(aligned == true_labels)
+        if acc > best_acc:
+            best_acc = acc
+            best_aligned = aligned
+    return best_aligned
 
 
 def train():
