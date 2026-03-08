@@ -51,7 +51,7 @@ MANIFEST
 models/*.h5
 models/*.joblib
 models/*.model
-*.pkl
+models/*.pkl
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

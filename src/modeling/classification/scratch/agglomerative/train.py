@@ -33,13 +33,14 @@ def train():
     print("Agglomerative Clustering (from scratch) — on 2 000 sample subset")
     print("=" * 60)
 
-    # Use subset due to O(n^3) complexity
-    rng = np.random.RandomState(42)
+    # Use stratified subset to preserve class balance (O(n^3) complexity)
+    from sklearn.model_selection import StratifiedShuffleSplit
     subset_size = min(2000, len(X_scaled))
-    idx = rng.choice(len(X_scaled), size=subset_size, replace=False)
+    sss = StratifiedShuffleSplit(n_splits=1, train_size=subset_size, random_state=42)
+    idx, _ = next(sss.split(X_scaled, y))
     X_sub, y_sub = X_scaled[idx], y[idx]
 
-    agglo = AgglomerativeScratch(n_clusters=2, linkage="average")
+    agglo = AgglomerativeScratch(n_clusters=2, linkage="complete")
     agglo_labels = agglo.fit_predict(X_sub)
 
     agglo_aligned = _align_labels(y_sub, agglo_labels, n_clusters=2)
