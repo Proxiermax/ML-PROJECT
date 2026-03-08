@@ -48,7 +48,6 @@ share/python-wheels/
 MANIFEST
 
 # Trained models
-*.pkl
 models/*.h5
 models/*.joblib
 models/*.model
