@@ -10,7 +10,6 @@ from src.modeling.evaluation import evaluate_classification
 
 
 def _align_labels(true_labels, cluster_labels, n_clusters):
-    """Try all label permutations and pick the one with highest accuracy."""
     from itertools import permutations
     best_acc, best_aligned, best_mapping = -1, cluster_labels.copy(), None
     classes = list(range(n_clusters))
@@ -35,7 +34,6 @@ def train():
     print("Agglomerative Clustering (sklearn)")
     print("=" * 60)
 
-    # Use subset due to O(n^3) complexity
     rng = np.random.RandomState(42)
     subset_size = min(2000, len(X_scaled))
     idx = rng.choice(len(X_scaled), size=subset_size, replace=False)
@@ -49,7 +47,6 @@ def train():
     metrics = evaluate_classification(y_sub, agglo_aligned)
     metrics["y_test"] = y_sub
 
-    # Distance-based soft scores — gives the ROC curve a gradient instead of hard 0/1
     positive_cluster = [k for k, v in label_mapping.items() if v == 1][0]
     negative_cluster = 1 - positive_cluster
     centroids = np.array([
